@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="mis_product_template_product_tree" model="ir.ui.view">
+        <field name="name">mis.product.template.product.tree</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+            <field name="list_price" position="after">
+                 <field name="min_sale_price" optional="show"/>
+            </field>
+            <field name="default_code" position="before">
+                <field name="brand" optional="show"/>
+                <field name="color" optional="show"/>
+                <field name="generation" optional="show"/>
+                <field name="screen_size" optional="show"/>
+                <field name="model_no" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+
+    <record id="product_template_view_form_brand" model="ir.ui.view">
+        <field name="name">product.template.view.form.brand</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <field name="type" position="before">
+                 <field name="min_sale_price"/>
+                <field name="brand"/>
+                <field name="color"/>
+                <field name="generation"/>
+                <field name="screen_size"/>
+                <field name="model_no"/>
+
+            </field>
+
+
+        </field>
+    </record>
+    <record id="mis_product_brand_form_view" model="ir.ui.view">
+        <field name="name">mis.product.brand.form</field>
+        <field name="model">mis.product.brand</field>
+        <field name="arch" type="xml">
+            <form string="Brand">
+                <group>
+                    <field name="name"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="mis_brand_action" model="ir.actions.act_window">
+        <field name="name">Brand</field>
+        <field name="res_model">mis.product.brand</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+             <p>
+                Add a new Brand
+              </p>
+        </field>
+    </record>
+
+    <menuitem
+        action="product_customization.mis_brand_action" id="menu_product_brand_id"
+        parent="stock.menu_product_in_config_stock" sequence="20"/>
+
+
+    <record id="mis_product_color_form_view" model="ir.ui.view">
+        <field name="name">mis.product.color.form</field>
+        <field name="model">mis.product.color</field>
+        <field name="arch" type="xml">
+            <form string="Brand">
+                <group>
+                    <field name="name"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="mis_color_action" model="ir.actions.act_window">
+        <field name="name">Color</field>
+        <field name="res_model">mis.product.color</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+             <p>
+                Add a new Color
+              </p>
+        </field>
+    </record>
+
+    <menuitem
+        action="product_customization.mis_color_action" id="menu_product_color_id"
+        parent="stock.menu_product_in_config_stock" sequence="30"/>
+
+</odoo>

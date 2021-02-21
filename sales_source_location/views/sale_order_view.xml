@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_order_form_inherit_ref_change" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.ref.change</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <div align="left" valign="top">
+                    <field name="credit_limit_msg" style="color:red ! important;" />
+                </div>
+            </xpath>
+            <xpath expr="//button[@name='action_cancel']" position="before">
+                <button name="action_confirm_deliver" id="action_confirm_deliver"
+                        string="Confirm and Deliver" class="btn-primary" type="object"
+                        attrs="{'invisible': [('state', 'not in', ['sent','draft'])]}"/>
+            </xpath>
+            <xpath expr="//field[@name='client_order_ref']" position="replace">
+            </xpath>
+<!--            <xpath expr="//field[@name='sale_order_template_id']" position="after">-->
+<!--                <field name="client_order_ref"/>-->
+
+<!--                <field name="custom_source_id" attrs="{'readonly': [('state', 'not in', ['draft', 'sent'])]}"/>-->
+<!--            </xpath>-->
+<!--            <xpath expr="//field[@name='payment_term_id']" position="after" >-->
+<!--                <field name="custom_source_location_id"  attrs="{'readonly': [('state', 'not in', ['draft', 'sent'])]}"/>-->
+<!--            </xpath>-->
+            <xpath expr="//field[@name='sale_order_template_id']" position="after">
+                <field name="client_order_ref"/>
+                <field name="user_location" invisible="1"/>
+                <field name="custom_source_id" attrs="{'readonly': ['|', ('state', 'not in', ['draft', 'sent']), ('user_location','!=',0)]}"/>
+            </xpath>
+            <xpath expr="//field[@name='payment_term_id']" position="after" >
+                <field name="user_location" invisible="1"/>
+                <field name="custom_source_location_id"  attrs="{'readonly': ['|', ('state', 'not in', ['draft', 'sent']), ('user_location','!=',0)]}"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

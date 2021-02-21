@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_mis_product_brand_user,mis.product.brand.user,model_mis_product_brand,base.group_user,1,0,0,0
+access_mis_product_brand_root,mis.product.brand.root,model_mis_product_brand,base.group_system,1,1,1,1
+access_mis_product_color_user,mis.product.color.user,model_mis_product_color,base.group_user,1,0,0,0
+access_mis_product_color_root,mis.product.color.root,model_mis_product_color,base.group_system,1,1,1,1
