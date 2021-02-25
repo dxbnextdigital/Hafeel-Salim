@@ -28,11 +28,13 @@
             <xpath expr="//field[@name='sale_order_template_id']" position="after">
                 <field name="client_order_ref"/>
                 <field name="user_location" invisible="1"/>
-                <field name="custom_source_id" attrs="{'readonly': ['|', ('state', 'not in', ['draft', 'sent']), ('user_location','!=',0)]}"/>
+                <!--field name="custom_source_id" attrs="{'readonly': ['|', ('state', 'not in', ['draft', 'sent']), ('user_location','!=',0)]}"/-->
+                <field name="custom_source_id" attrs="{'readonly': [('state', 'not in', ['draft', 'sent'])]}"/>
             </xpath>
             <xpath expr="//field[@name='payment_term_id']" position="after" >
                 <field name="user_location" invisible="1"/>
-                <field name="custom_source_location_id"  attrs="{'readonly': ['|', ('state', 'not in', ['draft', 'sent']), ('user_location','!=',0)]}"/>
+                <!--field name="custom_source_location_id"  attrs="{'readonly': ['|', ('state', 'not in', ['draft', 'sent']), ('user_location','!=',0)]}"/-->
+                <field name="custom_source_location_id"  attrs="{'readonly': [('state', 'not in', ['draft', 'sent'])]}"/>
             </xpath>
         </field>
     </record>
