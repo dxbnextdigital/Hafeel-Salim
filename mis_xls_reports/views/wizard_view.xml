@@ -43,7 +43,7 @@
                   parent="stock.menu_warehouse_report"
                   id="export_excel"
                   action="wizard_act"
-                  sequence="3"/>
+                  />
     </data>
 
 </odoo>
