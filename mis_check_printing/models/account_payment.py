@@ -2,6 +2,12 @@
 
 from odoo import models, api, fields, _
 from odoo.exceptions import ValidationError, UserError
+
+class account_payment_register(models.TransientModel):
+    _inherit = "account.payment.register"
+
+    check_date = fields.Date('Check Date')
+
 class account_payment(models.Model):
     _inherit = "account.payment"
 
