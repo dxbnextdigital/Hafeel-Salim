@@ -40,10 +40,10 @@
 
 
         <menuitem name="Current stock in Excel"
-                  parent="stock.menu_warehouse_report"
+                  parent="stock.menu_product_in_config_stock"
                   id="export_excel"
                   action="wizard_act"
-                  />
+                  sequence="50"/>
     </data>
 
 </odoo>
