@@ -10,7 +10,7 @@
     """,
     'author': "Mindinfsys",
     'website': 'www.mindinfosys.com',
-    'depends': ['base','sale','stock', 'base_setup','user_customization'],
+    'depends': ['base','sale','stock', 'base_setup',],
     'data': [
         'security/ir.model.access.csv',
         'views/sale_order_view.xml',
