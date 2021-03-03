@@ -76,7 +76,8 @@ class SaleOrder(models.Model):
                 create_vals = (0, 0, {
                     'date': datetime.now(),
                     'name': line.product_id.name,
-                    'ref': 'Auto Invoice - ' + so.name,
+                    # 'ref': so.client_order_ref,
+                    # 'payment_reference': so.name,
                     'parent_state': 'draft',
                     'quantity': line.product_uom_qty,
                     'price_unit': line.price_unit,
@@ -99,7 +100,8 @@ class SaleOrder(models.Model):
                          'team_id': so.team_id.id,
                          'invoice_user_id': so.user_id.id,
                          'invoice_payment_term_id': so.payment_term_id.id,
-                         'ref': 'Auto Invoice - ' + so.name,
+                         'ref': so.client_order_ref,
+                         'payment_reference': so.name,
                          'name': '/',
                          'state': 'draft',
                          'move_type': 'out_invoice',
@@ -126,6 +128,18 @@ class SaleOrderLine(models.Model):
         related='order_id.client_order_ref',
         store=True,
     )
+    my_stock = fields.Float('AVL QTY', compute='_avlqty', store=True)
+
+    @api.depends('product_id','order_id.custom_source_location_id')
+    def _avlqty(self):
+        for rec in self:
+            if rec.product_id and rec.order_id.custom_source_location_id:
+                stquant = self.env['stock.quant'].search([('product_id', '=', rec.product_id.id), ('location_id', '=', rec.order_id.custom_source_location_id.id)])
+                avlqty =0.0
+                for recst in stquant:
+                    avlqty+=recst.quantity
+                rec.my_stock=avlqty
+
     def _prepare_invoice_custom(self):
         """
         Prepare the dict of values to create the new invoice for a sales order. This method may be
