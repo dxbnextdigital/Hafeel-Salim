@@ -4,6 +4,7 @@ class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
     brand = fields.Many2one('mis.product.brand', string='Brand')
+    product_name = fields.Char(string='Print Product name')
     color = fields.Many2one('mis.product.color', string='Color')
     min_sale_price = fields.Float(string='Min. Sales Price', default=0.00)
     generation = fields.Char(string='Connectivity')
