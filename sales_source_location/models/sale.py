@@ -24,15 +24,23 @@ class SaleOrder(models.Model):
     @api.depends('partner_id')
     def _current_creditlimit(self):
         tot=0.00
+        partner_lmt =0.00
+        is_unlimited =False
         strdate =''
         for rec in self:
+            partner_lmt+=rec.partner_id.credit_limit
+            is_unlimited =rec.partner_id.over_credit
             objinv = self.env['account.move'].search([('partner_id', '=', rec.partner_id.id), ('move_type', '=', 'out_invoice'), ('state', '=', 'posted'), ('amount_residual', '>', 0.0)])
             for recinv in objinv:
                 tot += recinv.amount_residual
 
-            rec.credit_limit_msg='Amount due as on date AED %s. ' % format(tot, '.2f')
-
-
+            # if is_unlimited:
+            #     rec.credit_limit_msg = 'Amount due as on date AED %s. |  Credit Limit is AED %s. |  Available Limit is AED %s.' % format(
+            #         tot, '.2f')
+            # else:
+            rec.credit_limit_msg = 'Amount due as on date AED %s. |  Credit Limit is AED %s. |  Available Limit is AED %s. | Allow Over Credit : %s' % (
+            format(
+                tot, '.2f'), format(partner_lmt, '.2f'), format(partner_lmt - tot, '.2f'), is_unlimited)
 
     @api.onchange('custom_source_id')
     def _onchange_custom_source_id(self):
@@ -78,6 +86,7 @@ class SaleOrder(models.Model):
                     'name': line.product_id.name,
                     # 'ref': so.client_order_ref,
                     # 'payment_reference': so.name,
+                    'discount': line.discount,
                     'parent_state': 'draft',
                     'quantity': line.product_uom_qty,
                     'price_unit': line.price_unit,
@@ -87,6 +96,7 @@ class SaleOrder(models.Model):
                     'analytic_account_id': so.analytic_account_id.id or False,
                     'analytic_tag_ids': [(6, 0, line.analytic_tag_ids.ids)],
                     'tax_ids': [(6, 0, line.tax_id.ids)],
+                    
                 })
                 # totalamt += line.price_total
                 move_line_vals.append(create_vals)
@@ -129,6 +139,10 @@ class SaleOrderLine(models.Model):
         store=True,
     )
     my_stock = fields.Float('AVL QTY', compute='_avlqty', store=True)
+ #   brand = fields.Many2one('mis.product.brand', string='Brand', related='product_id.brand')
+
+
+
 
     @api.depends('product_id','order_id.custom_source_location_id')
     def _avlqty(self):
@@ -216,3 +230,11 @@ class SaleOrderLine(models.Model):
             raise UserError(_('There is no invoiceable line. If a product has a Delivered quantities invoicing policy, please make sure that a quantity has been delivered.'))
         moves = self.env['account.move'].sudo().with_context(default_type='out_invoice').create(invoice_vals)
         return moves
+
+class MisSaleReport(models.Model):
+    _inherit = "sale.report"
+
+    brand = fields.Many2one('mis.product.brand', string="Brand")
+
+
+
