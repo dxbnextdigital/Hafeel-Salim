@@ -144,9 +144,9 @@ class StockReport(models.TransientModel):
             colno = 0
             sheet.write(rowno, colno, rowno-1, wbf['content_border'])
             colno += 1
-            sheet.write(rowno, colno, str(rec.barcode), wbf['content_border'])
+            sheet.write(rowno, colno, str(rec.barcode if rec.barcode else ""), wbf['content_border'])
             colno += 1
-            sheet.write(rowno, colno, rec.name, wbf['content_border'])
+            sheet.write(rowno, colno, rec.name if rec.name else "", wbf['content_border'])
             colno += 1
             sheet.write(rowno, colno, rec.standard_price, wbf['content_float_border'])
             colno += 1
