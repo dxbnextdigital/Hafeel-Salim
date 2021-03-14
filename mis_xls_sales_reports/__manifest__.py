@@ -1,8 +1,8 @@
 {
-    'name': 'MiS XLS Reports',
+    'name': 'MiS XLS Sales Reports',
     'version': '13.0.1',
-    'summary': "XLS Reports",
-    'description': "XLS Reports for stock and others",
+    'summary': "XLS Sales Reports",
+    'description': "XLS Reports for Sales",
     'category': 'Warehouse',
     'author': 'mindinfosys.com',
     'maintainer': 'mindinfosys.com',
@@ -19,7 +19,7 @@
             'views/action_manager.xml',
             'security/ir.model.access.csv',
             ],
-#    'images': ['static/description/banner.png'],
+
     'license': 'AGPL-3',
     'installable': True,
     'auto_install': False,

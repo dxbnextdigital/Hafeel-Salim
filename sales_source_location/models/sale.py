@@ -96,7 +96,7 @@ class SaleOrder(models.Model):
                     'analytic_account_id': so.analytic_account_id.id or False,
                     'analytic_tag_ids': [(6, 0, line.analytic_tag_ids.ids)],
                     'tax_ids': [(6, 0, line.tax_id.ids)],
-                    
+
                 })
                 # totalamt += line.price_total
                 move_line_vals.append(create_vals)

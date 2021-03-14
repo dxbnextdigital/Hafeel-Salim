@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <record model='ir.ui.view' id='wizard_sales_form'>
+            <field name="name">wizard.sales.history.form</field>
+            <field name="model">wizard.sales.history</field>
+            <field name="arch" type="xml">
+                <form string="Wizard">
+                        <group string="Date">
+                            <group>
+                                <field name="start_date"/>
+                            </group>
+                            <group>
+                                <field name="end_date"/>
+                            </group>
+                        </group>
+                    <footer>
+                        <button name="export_xls" type="object" default_focus="1"
+                                string="Download Xls Report" class="oe_highlight"
+                                context="{'xls_export':1}" icon="fa-download"/>
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record model='ir.actions.act_window' id='wizard_sales_act'>
+            <field name="name">Download Xls Report</field>
+            <field name="res_model">wizard.sales.history</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="wizard_sales_form"/>
+            <field name="target">new</field>
+        </record>
+
+
+        <menuitem name="Downlad Sales History"
+                  parent="sale.menu_sale_report"
+                  id="export_sales_history_excel"
+                  action="wizard_sales_act"
+                  sequence="50"/>
+    </data>
+
+</odoo>
