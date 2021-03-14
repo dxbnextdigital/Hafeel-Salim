@@ -11,23 +11,31 @@ from datetime import timedelta
 from odoo.exceptions import UserError
 
 
-class StockReport(models.TransientModel):
-    _name = "wizard.stock.history"
-    _description = "Current Stock History"
+class SalesReport(models.TransientModel):
+    _name = "wizard.sales.history"
+    _description = "Current Sales History"
 
-    warehouse = fields.Many2many('stock.warehouse', 'wh_wiz_rel', 'wh', 'wiz', string='Warehouse', required=True)
+    #warehouse = fields.Many2many('stock.warehouse', 'wh_wiz_rel', 'wh', 'wiz', string='Warehouse', required=True)
     # category = fields.Many2many('product.category', 'categ_wiz_rel', 'categ', 'wiz', string='Warehouse')
+
+    start_date = fields.Date(string='Start Date', required=True)
+    end_date = fields.Date(string="End Date", required=True)
+
 
     datas = fields.Binary('File', readonly=True)
     datas_fname = fields.Char('Filename', readonly=True)
 
     def export_xls(self):
 
-        objlocation = self.env['stock.location'].search([('usage', '=', 'internal'), ('active', '=', True), ('company_id', 'in', self.warehouse.ids)], order='id')
-        locationids = tuple([loc_id.id for loc_id in objlocation])
+        # objsales = self.env['sale.order'].search([('usage', '=', 'internal'), ('active', '=', True), ('company_id', 'in', self.warehouse.ids)], order='id')
+
+        objsales = self.env['sale.order'].search([('date_order', '>=', self.start_date),
+                                                               ('date_order', '<=', self.end_date), ('state', 'in', ('sale','done'))])
+
+        salsids = tuple([sale_id.id for sale_id in objsales])
 
         date = datetime.now()
-        report_name = 'stock_' + date.strftime("%y%m%d%H%M%S")
+        report_name = 'sales_' + date.strftime("%y%m%d%H%M%S")
         date_string = date.strftime("%B-%y")
         filename = '%s %s' % (report_name, date_string)
 
@@ -37,7 +45,7 @@ class StockReport(models.TransientModel):
         wbf = {}
 
         comp = self.env.user.company_id.name
-        sheet = workbook.add_worksheet('Stock Info')
+        sheet = workbook.add_worksheet('Sales Info')
         format0 = workbook.add_format({'font_size': 20, 'align': 'center', 'bold': True})
         format1 = workbook.add_format({'font_size': 14, 'align': 'vcenter', 'bold': True})
         format11 = workbook.add_format({'font_size': 12, 'align': 'center', 'bold': True})
@@ -86,101 +94,111 @@ class StockReport(models.TransientModel):
 
 
 
-        objstock = self.env['stock.quant'].search([('location_id', 'in', locationids)])
-        productids = tuple([product_id.id for product_id in objstock])
+        objsalesln = self.env['sale.order.line'].search([('order_id', 'in', salsids)],order='id')
 
-        objproduct = self.env['product.product'].search([('id', '!=', 0)])
-        rowno = 2
+        rowno = 1
         colno = 0
 
         colno = 0
         column_width = 10
         sheet.set_column(colno, colno, column_width)
-        sheet.write(1, colno, 'Sl#', wbf['content_border_bg'])
+        sheet.write(rowno-1, colno, 'Sl#', wbf['content_border_bg'])
 
         colno += 1
         column_width = 15
         sheet.set_column(colno, colno, column_width)
-        sheet.write(1, colno, 'Barcode', wbf['content_border_bg'])
+        sheet.write(rowno-1, colno, 'Order Date', wbf['content_border_bg'])
+
+        colno += 1
+        column_width = 25
+        sheet.set_column(colno, colno, column_width)
+        sheet.write(rowno - 1, colno, 'Sales Person', wbf['content_border_bg'])
+
+        colno += 1
+        column_width = 35
+        sheet.set_column(colno, colno, column_width)
+        sheet.write(rowno-1, colno, 'Partner Name', wbf['content_border_bg'])
+
+        colno += 1
+        column_width = 15
+        sheet.set_column(colno, colno, column_width)
+        sheet.write(rowno-1, colno, 'Brand', wbf['content_border_bg'])
+
+        colno += 1
+        column_width = 15
+        sheet.set_column(colno, colno, column_width)
+        sheet.write(rowno-1, colno, 'Barcode', wbf['content_border_bg'])
 
         colno += 1
         column_width = 65
         sheet.set_column(colno, colno, column_width)
-        sheet.write(1, colno, 'Product', wbf['content_border_bg'])
+        sheet.write(rowno-1, colno, 'Product', wbf['content_border_bg'])
 
         colno += 1
         column_width = 10
         sheet.set_column(colno, colno, column_width)
-        sheet.write(1, colno, 'Cost', wbf['content_border_bg'])
+        sheet.write(rowno-1, colno, 'Cost', wbf['content_border_bg'])
 
         colno += 1
         column_width = 10
         sheet.set_column(colno, colno, column_width)
-        sheet.write(1, colno, 'Sales Price', wbf['content_border_bg'])
-
-        for recloc in objlocation:
-            colno += 1
-            column_width = 11
-            sheet.set_column(colno, colno, column_width)
-            sheet.write(1, colno, recloc.name, wbf['content_border_bg'])
+        sheet.write(rowno-1, colno, 'Sales Price', wbf['content_border_bg'])
+        colno += 1
+        column_width = 10
+        sheet.set_column(colno, colno, column_width)
+        sheet.write(rowno-1, colno, 'QTY', wbf['content_border_bg'])
 
         colno += 1
         column_width = 15
         sheet.set_column(colno, colno, column_width)
-        sheet.write(1, colno, 'Total QTY Available', wbf['content_border_bg'])
+        sheet.write(rowno-1, colno, 'Total Cost', wbf['content_border_bg'])
 
         colno += 1
         column_width = 15
         sheet.set_column(colno, colno, column_width)
-        sheet.write(1, colno, 'Total Cost Value', wbf['content_border_bg'])
+        sheet.write(rowno-1, colno, 'Total Sales Price', wbf['content_border_bg'])
 
-        colno += 1
-        column_width = 15
-        sheet.set_column(colno, colno, column_width)
-        sheet.write(1, colno, 'Total Sales Value', wbf['content_border_bg'])
-
-        for rec in objproduct:
+        for rec in objsalesln:
 
             colno = 0
-            sheet.write(rowno, colno, rowno-1, wbf['content_border'])
+            sheet.write(rowno, colno, rowno, wbf['content_border'])
             colno += 1
-            sheet.write(rowno, colno, str(rec.barcode), wbf['content_border'])
+            sheet.write(rowno, colno, str(rec.order_id.date_order.strftime('%d-%m-%Y')), wbf['content_border'])
             colno += 1
-            sheet.write(rowno, colno, rec.name, wbf['content_border'])
+            sheet.write(rowno, colno, str(rec.salesman_id.name if rec.salesman_id.name else ""), wbf['content_border'])
             colno += 1
-            sheet.write(rowno, colno, rec.standard_price, wbf['content_float_border'])
+            sheet.write(rowno, colno, str(rec.order_id.partner_id.name if rec.order_id.partner_id.name else ""), wbf['content_border'])
             colno += 1
-            sheet.write(rowno, colno, rec.list_price, wbf['content_float_border'])
+            sheet.write(rowno, colno, rec.product_id.brand.name if rec.product_id.brand.name else "", wbf['content_border'])
+            colno += 1
+            sheet.write(rowno, colno, str(rec.product_id.barcode if rec.product_id.barcode else ""), wbf['content_border'])
+            colno += 1
+            sheet.write(rowno, colno, rec.product_id.name if rec.product_id.name else "", wbf['content_border'])
+
+            colno += 1
+            sheet.write(rowno, colno, rec.product_id.standard_price, wbf['content_float_border'])
+            colno += 1
+            sheet.write(rowno, colno, rec.product_id.list_price, wbf['content_float_border'])
+            colno += 1
+            sheet.write(rowno, colno, rec.product_uom_qty, wbf['content_float_border'])
+            colno += 1
+            sheet.write(rowno, colno, (rec.product_id.standard_price*rec.product_uom_qty), wbf['content_float_border'])
+            colno += 1
+            sheet.write(rowno, colno, (rec.product_id.list_price*rec.product_uom_qty), wbf['content_float_border'])
 
             totcost =0.00
             totsal=0.00
             totqty=0
-            for rec_stk_loc in objlocation:
-                colno += 1
-                objstockqnt = self.env['stock.quant'].search([('product_id', '=', rec.id), ('location_id', '=', rec_stk_loc.id)], limit=1)
-                if objstockqnt:
-                    totqty+=objstockqnt.quantity
-                    totcost+=objstockqnt.quantity*rec.standard_price
-                    totsal+=objstockqnt.quantity*rec.list_price
-                    if objstockqnt.quantity<0:
-                        sheet.write(rowno, colno, objstockqnt.quantity, wbf['content_border_red'])
-                    else:
-                        sheet.write(rowno, colno, objstockqnt.quantity, wbf['content_border'])
-                else:
-                    sheet.write(rowno, colno, "", wbf['content_border'])
-
-            colno += 1
-            if totqty<0:
-                sheet.write(rowno, colno, totqty, wbf['content_border_red'])
-            else:
-                sheet.write(rowno, colno, totqty, wbf['content_border'])
-            colno += 1
-            sheet.write(rowno, colno, totcost, wbf['content_float_border'])
-            colno += 1
-            sheet.write(rowno, colno, totsal, wbf['content_float_border'])
-
 
             rowno+=1
+        sheet.merge_range(rowno, 0, rowno, 8, "Total", wbf['content_border_bg'])
+        colno = 9
+        sheet.write(rowno, colno, "=sum(J2:J"+str(rowno)+")", wbf['content_float_border'])
+        colno = 10
+        sheet.write(rowno, colno, "=sum(K2:K" + str(rowno) + ")", wbf['content_float_border'])
+        colno = 11
+        sheet.write(rowno, colno, "=sum(L2:L" + str(rowno) + ")", wbf['content_float_border'])
+        rowno += 1
 
         workbook.close()
         out = base64.encodestring(fp.getvalue())
