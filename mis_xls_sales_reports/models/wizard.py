@@ -178,7 +178,7 @@ class SalesReport(models.TransientModel):
             colno += 1
             sheet.write(rowno, colno, rec.product_id.standard_price, wbf['content_float_border'])
             colno += 1
-            sheet.write(rowno, colno, rec.product_id.list_price, wbf['content_float_border'])
+            sheet.write(rowno, colno, rec.price_unit, wbf['content_float_border'])
             colno += 1
             sheet.write(rowno, colno, rec.product_uom_qty, wbf['content_float_border'])
             colno += 1
