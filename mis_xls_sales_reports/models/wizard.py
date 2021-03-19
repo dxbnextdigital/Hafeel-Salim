@@ -92,6 +92,28 @@ class SalesReport(models.TransientModel):
         wbf['content_float_border'].set_left()
         wbf['content_float_border'].set_right()
 
+        wbf['content_int_border'] = workbook.add_format({'align': 'right', 'num_format': '#,##0'})
+        wbf['content_int_border'].set_top()
+        wbf['content_int_border'].set_bottom()
+        wbf['content_int_border'].set_left()
+        wbf['content_int_border'].set_right()
+
+
+        wbf['content_float_border_total'] = workbook.add_format({'align': 'right', 'num_format': '#,##0.00', 'bold': 1, 'bg_color': '#E1E1E1'})
+        wbf['content_float_border_total'].set_top()
+        wbf['content_float_border_total'].set_bottom()
+        wbf['content_float_border_total'].set_left()
+        wbf['content_float_border_total'].set_right()
+
+
+        wbf['content_int_border_total'] = workbook.add_format({'align': 'right', 'num_format': '#,##0', 'bold': 1, 'bg_color': '#E1E1E1'})
+        wbf['content_int_border_total'].set_top()
+        wbf['content_int_border_total'].set_bottom()
+        wbf['content_int_border_total'].set_left()
+        wbf['content_int_border_total'].set_right()
+
+
+
 
 
         objsalesln = self.env['sale.order.line'].search([('order_id', 'in', salsids)],order='id')
@@ -143,6 +165,12 @@ class SalesReport(models.TransientModel):
         column_width = 10
         sheet.set_column(colno, colno, column_width)
         sheet.write(rowno-1, colno, 'Sales Price', wbf['content_border_bg'])
+
+        colno += 1
+        column_width = 10
+        sheet.set_column(colno, colno, column_width)
+        sheet.write(rowno - 1, colno, 'Unit Profit', wbf['content_border_bg'])
+
         colno += 1
         column_width = 10
         sheet.set_column(colno, colno, column_width)
@@ -157,6 +185,11 @@ class SalesReport(models.TransientModel):
         column_width = 15
         sheet.set_column(colno, colno, column_width)
         sheet.write(rowno-1, colno, 'Total Sales Price', wbf['content_border_bg'])
+
+        colno += 1
+        column_width = 15
+        sheet.set_column(colno, colno, column_width)
+        sheet.write(rowno - 1, colno, 'Total Profit', wbf['content_border_bg'])
 
         for rec in objsalesln:
 
@@ -180,24 +213,31 @@ class SalesReport(models.TransientModel):
             colno += 1
             sheet.write(rowno, colno, rec.price_unit, wbf['content_float_border'])
             colno += 1
-            sheet.write(rowno, colno, rec.product_uom_qty, wbf['content_float_border'])
+            sheet.write(rowno, colno, (rec.price_unit-rec.product_id.standard_price), wbf['content_float_border'])
+
+            colno += 1
+            sheet.write(rowno, colno, int(rec.product_uom_qty), wbf['content_int_border'])
             colno += 1
             sheet.write(rowno, colno, (rec.product_id.standard_price*rec.product_uom_qty), wbf['content_float_border'])
             colno += 1
             sheet.write(rowno, colno, (rec.price_subtotal), wbf['content_float_border'])
+            colno += 1
+            sheet.write(rowno, colno, ((rec.price_subtotal)-(rec.product_id.standard_price*rec.product_uom_qty)), wbf['content_float_border'])
 
             totcost =0.00
             totsal=0.00
             totqty=0
 
             rowno+=1
-        sheet.merge_range(rowno, 0, rowno, 8, "Total", wbf['content_border_bg'])
-        colno = 9
-        sheet.write(rowno, colno, "=sum(J2:J"+str(rowno)+")", wbf['content_float_border'])
+        sheet.merge_range(rowno, 0, rowno, 9, "Total", wbf['content_border_bg'])
         colno = 10
-        sheet.write(rowno, colno, "=sum(K2:K" + str(rowno) + ")", wbf['content_float_border'])
+        sheet.write(rowno, colno, "=sum(K2:K"+str(rowno)+")", wbf['content_int_border_total'])
         colno = 11
-        sheet.write(rowno, colno, "=sum(L2:L" + str(rowno) + ")", wbf['content_float_border'])
+        sheet.write(rowno, colno, "=sum(L2:L" + str(rowno) + ")", wbf['content_float_border_total'])
+        colno = 12
+        sheet.write(rowno, colno, "=sum(M2:M" + str(rowno) + ")", wbf['content_float_border_total'])
+        colno = 13
+        sheet.write(rowno, colno, "=sum(M2:M" + str(rowno) + ")", wbf['content_float_border_total'])
         rowno += 1
 
         workbook.close()
