@@ -9,10 +9,10 @@
                 <form string="Wizard">
                         <group string="Date">
                             <group>
-                                <field name="start_date"/>
+                                <field name="end_date"/>
                             </group>
                             <group>
-                                <field name="end_date"/>
+                                <!--field name="end_date"/-->
                             </group>
                         </group>
                     <footer>

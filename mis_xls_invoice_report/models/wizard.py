@@ -15,8 +15,8 @@ class InvoiceReport(models.TransientModel):
     _name = "wizard.invoice.history"
     _description = "Current Invoice History"
 
-    start_date = fields.Date(string='Start Date', required="1")
-    end_date = fields.Date(string="End Date", required="1")
+    #start_date = fields.Date(string='Start Date', required="1")
+    end_date = fields.Date(string="End Date", default=fields.Date.to_string(date.today()), required="1")
 
 
     datas = fields.Binary('File', readonly=True)
@@ -26,8 +26,7 @@ class InvoiceReport(models.TransientModel):
     def export_xls(self):
 
 
-        objinvoice = self.env['account.move'].search([('invoice_date', '>=', self.start_date),
-                                                               ('invoice_date', '<=', self.end_date), ('state', '=', 'posted'),
+        objinvoice = self.env['account.move'].search([('invoice_date', '<=', self.end_date), ('state', '=', 'posted'),
                                                     ('move_type', '=', 'out_invoice'), ('amount_residual_signed', '>', 0.0)])
 
 
@@ -158,7 +157,34 @@ class InvoiceReport(models.TransientModel):
         sheet.set_column(colno, colno, column_width)
         sheet.write(rowno - 1, colno, 'Paid', wbf['content_border_bg'])
 
+        summary_sales_person = {}
+        summary_partner = {}
         for rec in objinvoice:
+            ####################### Sales Person Due Report
+            if (rec.invoice_user_id.name in summary_sales_person):
+                dic_salesperson = summary_sales_person[rec.invoice_user_id.name]
+                dic_salesperson['totalinvoice'] = dic_salesperson['totalinvoice'] + rec.amount_total_signed
+                dic_salesperson['totaldue'] = dic_salesperson['totaldue'] + rec.amount_residual_signed
+                summary_sales_person[rec.invoice_user_id.name] = dic_salesperson
+            else:
+                dic_salesperson = {}
+                dic_salesperson = {'totalinvoice': rec.amount_total_signed, 'totaldue': rec.amount_residual_signed}
+                summary_sales_person[rec.invoice_user_id.name] = dic_salesperson
+
+            ####################### Partner Due Report
+            if (rec.partner_id.id in summary_partner):
+                dic_partner = summary_partner[rec.partner_id.id]
+                dic_partner['totalinvoice'] = dic_partner['totalinvoice'] + rec.amount_total_signed
+                dic_partner['totaldue'] = dic_partner['totaldue'] + rec.amount_residual_signed
+                summary_partner[rec.partner_id.id] = dic_partner
+            else:
+                dic_partner = {}
+                dic_partner = {'partnername': rec.partner_id.name, 'totalinvoice': rec.amount_total_signed, 'totaldue': rec.amount_residual_signed}
+                summary_partner[rec.partner_id.id] = dic_partner
+
+
+            #################################
+
             colno = 0
             sheet.write(rowno, colno, rowno, wbf['content_border'])
             colno += 1
@@ -190,6 +216,84 @@ class InvoiceReport(models.TransientModel):
         sheet.write(rowno, colno, "=sum(I2:I" + str(rowno) + ")", wbf['content_float_border_total'])
 
         rowno += 1
+
+
+
+        #####################################  Sales Person
+        worksheet2 = workbook.add_worksheet('Sales Person Due Summary')
+
+        colno = 0
+        column_width = 50
+        worksheet2.set_column(colno, colno, column_width)
+        worksheet2.write(0, colno, 'Sales Person Name', wbf['content_border_bg'])
+
+        colno += 1
+        column_width = 30
+        worksheet2.set_column(colno, colno, column_width)
+        worksheet2.write(0, colno, 'Total Invoice', wbf['content_border_bg'])
+
+        colno += 1
+        column_width = 30
+        worksheet2.set_column(colno, colno, column_width)
+        worksheet2.write(0, colno, 'Total Due', wbf['content_border_bg'])
+
+        rowno = 1
+        colno = 0
+        for recseleperson in summary_sales_person:
+
+            colno = 0
+            worksheet2.write(rowno, colno, recseleperson if recseleperson else '', wbf['content_border'])
+            colno += 1
+            dic_sales_persons = summary_sales_person[recseleperson]
+            worksheet2.write(rowno, colno, dic_sales_persons['totalinvoice'], wbf['content_float_border'])
+            colno += 1
+
+            worksheet2.write(rowno, colno, dic_sales_persons['totaldue'], wbf['content_float_border'])
+            rowno += 1
+        worksheet2.write(rowno, 0, "Total", wbf['content_border_bg'])
+        colno = 1
+        worksheet2.write(rowno, colno, "=sum(B2:B" + str(rowno) + ")", wbf['content_float_border_total'])
+        colno += 1
+        worksheet2.write(rowno, colno, "=sum(C2:C" + str(rowno) + ")", wbf['content_float_border_total'])
+
+        ########################Partner sales
+        worksheet3 = workbook.add_worksheet('Customer Due Summary')
+
+        colno = 0
+        column_width = 50
+        worksheet3.set_column(colno, colno, column_width)
+        worksheet3.write(0, colno, 'Customer Name', wbf['content_border_bg'])
+
+        colno += 1
+        column_width = 30
+        worksheet3.set_column(colno, colno, column_width)
+        worksheet3.write(0, colno, 'Total Invoice', wbf['content_border_bg'])
+
+        colno += 1
+        column_width = 30
+        worksheet3.set_column(colno, colno, column_width)
+        worksheet3.write(0, colno, 'Total Due', wbf['content_border_bg'])
+
+        rowno = 1
+        colno = 0
+        for recpartner in summary_partner:
+            dic_partners = summary_partner[recpartner]
+            colno = 0
+            worksheet3.write(rowno, colno, dic_partners['partnername'] if dic_partners['partnername'] else '',
+                             wbf['content_border'])
+            colno += 1
+            worksheet3.write(rowno, colno, dic_partners['totalinvoice'], wbf['content_float_border'])
+
+            colno += 1
+            worksheet3.write(rowno, colno, dic_partners['totaldue'], wbf['content_float_border'])
+            rowno += 1
+        worksheet3.write(rowno, 0, "Total", wbf['content_border_bg'])
+        colno = 1
+        worksheet3.write(rowno, colno, "=sum(B2:B" + str(rowno) + ")", wbf['content_float_border_total'])
+        colno += 1
+        worksheet3.write(rowno, colno, "=sum(C2:C" + str(rowno) + ")", wbf['content_float_border_total'])
+
+        ###############################
 
         workbook.close()
         out = base64.encodestring(fp.getvalue())
