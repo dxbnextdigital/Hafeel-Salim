@@ -84,6 +84,19 @@ class StockReport(models.TransientModel):
         wbf['content_float_border'].set_left()
         wbf['content_float_border'].set_right()
 
+        wbf['content_float_border_total'] = workbook.add_format(
+            {'align': 'right', 'num_format': '#,##0.00', 'bold': 1, 'bg_color': '#E1E1E1'})
+        wbf['content_float_border_total'].set_top()
+        wbf['content_float_border_total'].set_bottom()
+        wbf['content_float_border_total'].set_left()
+        wbf['content_float_border_total'].set_right()
+
+        wbf['content_int_border_total'] = workbook.add_format({'align': 'right', 'num_format': '#,##0', 'bold': 1, 'bg_color': '#E1E1E1'})
+        wbf['content_int_border_total'].set_top()
+        wbf['content_int_border_total'].set_bottom()
+        wbf['content_int_border_total'].set_left()
+        wbf['content_int_border_total'].set_right()
+
 
 
         objstock = self.env['stock.quant'].search([('location_id', 'in', locationids)])
@@ -178,9 +191,38 @@ class StockReport(models.TransientModel):
             sheet.write(rowno, colno, totcost, wbf['content_float_border'])
             colno += 1
             sheet.write(rowno, colno, totsal, wbf['content_float_border'])
+            colno = 14
+            rowno += 1
+
+        # colno = 3
+        # sheet.write(rowno, colno, "=sum(D3:D" + str(rowno) + ")", wbf['content_int_border_total'])
+        # colno = 4
+        # sheet.write(rowno, colno, "=sum(E3:E3" + str(rowno) + ")", wbf['content_int_border_total'])
+        sheet.merge_range(rowno, 0, rowno, 4, "Total", wbf['content_border_bg'])
+        colno = 5
+        sheet.write(rowno, colno, "=sum(F3:F" + str(rowno) + ")", wbf['content_int_border_total'])
+        colno = 6
+        sheet.write(rowno, colno, "=sum(G3:G" + str(rowno) + ")", wbf['content_int_border_total'])
+        colno = 7
+        sheet.write(rowno, colno, "=sum(H3:H" + str(rowno) + ")", wbf['content_int_border_total'])
+        colno = 8
+        sheet.write(rowno, colno, "=sum(I3:I" + str(rowno) + ")", wbf['content_int_border_total'])
+        colno = 9
+        sheet.write(rowno, colno, "=sum(J3:J" + str(rowno) + ")", wbf['content_int_border_total'])
+        colno = 10
+        sheet.write(rowno, colno, "=sum(K3:K" + str(rowno) + ")", wbf['content_int_border_total'])
+        colno =11
+        sheet.write(rowno, colno, "=sum(L3:L" + str(rowno) + ")", wbf['content_int_border_total'])
+        colno = 12
+        sheet.write(rowno, colno, "=sum(M3:M" + str(rowno) + ")", wbf['content_float_border_total'])
+        colno = 13
+        sheet.write(rowno, colno, "=sum(N3:N" + str(rowno) + ")", wbf['content_float_border_total'])
 
 
-            rowno+=1
+
+
+
+
 
         workbook.close()
         out = base64.encodestring(fp.getvalue())
