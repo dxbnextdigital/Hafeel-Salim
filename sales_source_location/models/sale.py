@@ -48,6 +48,13 @@ class SaleOrder(models.Model):
         self.custom_source_location_id = self.custom_source_id.stock_location_id.id
 
     def action_confirm_deliver(self):
+
+        for rec in self:
+            lineno =1
+            for recln in rec.order_line:
+                if recln.product_uom_qty>recln.my_stock:
+                 raise UserError('Trying to Sell more product than the available stock at line no : ' + str(lineno))
+                lineno+=1
         if self._get_forbidden_state_confirm() & set(self.mapped('state')):
             raise UserError(_(
                 'It is not allowed to confirm an order in the following states: %s'
@@ -96,7 +103,7 @@ class SaleOrder(models.Model):
                     'analytic_account_id': so.analytic_account_id.id or False,
                     'analytic_tag_ids': [(6, 0, line.analytic_tag_ids.ids)],
                     'tax_ids': [(6, 0, line.tax_id.ids)],
-                    
+
                 })
                 # totalamt += line.price_total
                 move_line_vals.append(create_vals)
@@ -141,10 +148,15 @@ class SaleOrderLine(models.Model):
     my_stock = fields.Float('AVL QTY', compute='_avlqty', store=True)
  #   brand = fields.Many2one('mis.product.brand', string='Brand', related='product_id.brand')
 
+    #
+    # @api.depends('product_id','product_uom_qty')
+    # def _checkavailablity(self):
+    #     raise UserError('Trying to Sell more product than the available stock')
+    #     for rec in self:
+    #         if rec.product_uom_qty>rec.my_stock:
+    #             raise UserError('Trying to Sell more product than the available stock')
 
-
-
-    @api.depends('product_id','order_id.custom_source_location_id')
+    @api.depends('product_id','product_uom_qty','order_id.custom_source_location_id')
     def _avlqty(self):
         for rec in self:
             if rec.product_id and rec.order_id.custom_source_location_id:
@@ -153,6 +165,7 @@ class SaleOrderLine(models.Model):
                 for recst in stquant:
                     avlqty+=recst.quantity
                 rec.my_stock=avlqty
+
 
     def _prepare_invoice_custom(self):
         """
