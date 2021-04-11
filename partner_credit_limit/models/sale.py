@@ -25,7 +25,7 @@ class SaleOrder(models.Model):
                                               ('state', '=', 'sale')])
             debit, credit = 0.0, 0.0
             amount_total = 0.0
-            if not partner.block_nonpayment:
+            if partner.block_nonpayment:
                 msg = 'Cannot processed due to non payment for due invoices.' \
                       '\nIf require to processed further please contact the administrator.'
 
