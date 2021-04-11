@@ -8,7 +8,7 @@
     'maintainer': 'Mindinfosys FZE LLC',
     'summary': 'Set credit limit warning',
     'depends': [
-        'sale_management',
+        'sale_management','contacts'
     ],
     'data': [
         'views/partner_view.xml',
