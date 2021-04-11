@@ -7,9 +7,13 @@
         <field name="type">form</field>
         <field name="inherit_id" ref="account.view_partner_property_form"/>
         <field name="arch" type="xml">
+             <field name="street" position="before">
+                 <field name="print_name"/>
+             </field>
             <field name="property_account_position_id" position="after">
-                <field name="credit_limit"/>
-                <field name="over_credit"/>
+                <field name="credit_limit" groups="account.group_account_manager" />
+                <field name="over_credit" groups="account.group_account_manager" />
+                <field name="block_nonpayment" groups="account.group_account_manager" />
             </field>
         </field>
     </record>
