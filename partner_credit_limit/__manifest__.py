@@ -7,7 +7,7 @@
     'website': 'http://www.mindinfosys.com/',
     'maintainer': 'Mindinfosys FZE LLC',
     'summary': 'Set credit limit warning',
-    'depends': [
+    'depends': ['base',
         'sale_management','contacts'
     ],
     'data': [
