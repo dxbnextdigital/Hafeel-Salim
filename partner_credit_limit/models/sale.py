@@ -25,26 +25,33 @@ class SaleOrder(models.Model):
                                               ('state', '=', 'sale')])
             debit, credit = 0.0, 0.0
             amount_total = 0.0
-            for status in confirm_sale_order:
-                amount_total += status.amount_total
-            for line in movelines:
-                credit += line.credit
-                debit += line.debit
-            partner_credit_limit = (partner.credit_limit - debit) + credit
-            available_credit_limit = \
-                (partner_credit_limit - debit)
-            if (amount_total - debit) > available_credit_limit:
-                if not partner.over_credit:
-                    # msg = 'Your available credit limit' \
-                    #       ' Amount = %s \nCheck "%s" Accounts or Credit ' \
-                    #       'Limits.' % (partner.credit_limit,
-                    #                    self.partner_id.name)
+            if partner.block_nonpayment:
+                msg = 'Cannot processed due to non payment for due invoices.' \
+                      '\nIf require to processed further please contact the administrator.'
 
-                    msg = 'The transaction amount is over and above the credit limit (AED %s).' \
-                        '\nIf require to processed further please increase the credit limit. ' % format((partner.credit_limit), '.2f')
+                raise UserError(_('You can not confirm Sale '
+                                  'Order. \n' + msg))
+            else:
+                for status in confirm_sale_order:
+                    amount_total += status.amount_total
+                for line in movelines:
+                    credit += line.credit
+                    debit += line.debit
+                partner_credit_limit = (partner.credit_limit - debit) + credit
+                available_credit_limit = \
+                    (partner_credit_limit - debit)
+                if (amount_total - debit) > available_credit_limit:
+                    if not partner.over_credit:
+                        # msg = 'Your available credit limit' \
+                        #       ' Amount = %s \nCheck "%s" Accounts or Credit ' \
+                        #       'Limits.' % (partner.credit_limit,
+                        #                    self.partner_id.name)
 
-                    raise UserError(_('You can not confirm Sale '
-                                      'Order. \n' + msg))
+                        msg = 'The transaction amount is over and above the credit limit (AED %s).' \
+                            '\nIf require to processed further please increase the credit limit. ' % format((partner.credit_limit), '.2f')
+
+                        raise UserError(_('You can not confirm Sale '
+                                          'Order. \n' + msg))
                 # partner.write(
                 #     {'credit_limit': credit - debit + self.amount_total})
             return True
