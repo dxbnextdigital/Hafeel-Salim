@@ -16,6 +16,7 @@
                 ],
     'data': [
             'views/wizard_view.xml',
+            'views/move_wizard_view.xml',
             'views/action_manager.xml',
             'security/ir.model.access.csv',
             ],
