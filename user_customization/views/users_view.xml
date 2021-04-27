@@ -9,6 +9,7 @@
                 <group name="messaging" position="before">
                     <group string="Locations">
                         <field name="custom_source_id"/>
+                        <field name="journal_id" widget="many2many_tags"/>
                     </group>
                 </group>
 
