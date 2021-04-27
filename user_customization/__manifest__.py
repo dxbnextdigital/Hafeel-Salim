@@ -10,7 +10,7 @@
     """,
     'author': "Mindinfsys",
     'website': 'www.mindinfosys.com',
-    'depends': ['base','sales_source_location', 'base_setup'],
+    'depends': ['base', 'base_setup', 'payment'],
     'data': [
         'views/users_view.xml',
     ],

@@ -9,3 +9,5 @@ class ResUsers(models.Model):
         'Source'
     )
 
+    journal_id = fields.Many2many('account.journal', domain=[('type', 'in', ('cash', 'bank'))])
+
