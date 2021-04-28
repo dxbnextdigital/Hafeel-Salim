@@ -11,7 +11,7 @@
                  <field name="print_name"/>
              </field>
             <field name="property_account_position_id" position="after">
-                <field name="block_nonpayment" groups="account.group_account_user"/>
+                <field name="block_nonpayment" groups="account.group_account_invoice"/>
             </field>
         </field>
     </record>
