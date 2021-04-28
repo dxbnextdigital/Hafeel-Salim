@@ -8,8 +8,8 @@
         <field name="inherit_id" ref="account.view_partner_property_form"/>
         <field name="arch" type="xml">
             <field name="property_account_position_id" position="after">
-                <field name="credit_limit" groups="account.group_account_user"/>
-                <field name="over_credit" groups="account.group_account_user"/>
+                <field name="credit_limit" groups="account.group_account_invoice"/>
+                <field name="over_credit" groups="account.group_account_invoice"/>
             </field>
         </field>
     </record>
