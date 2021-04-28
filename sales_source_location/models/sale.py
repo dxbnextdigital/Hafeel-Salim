@@ -135,8 +135,6 @@ class SaleOrder(models.Model):
             objacmove = self.env['account.move'].create(move_vals)
             objacmove.post()
 
-
-
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 
