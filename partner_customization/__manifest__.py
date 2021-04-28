@@ -7,7 +7,7 @@
     'website': 'http://www.mindinfosys.com/',
     'maintainer': 'Mindinfosys FZE LLC',
     'summary': 'Add print name and Block non payment',
-    'depends': ['base','base_setup'
+    'depends': ['base','base_setup','sale_management',
         ],
     'data': [
         'views/partner_view.xml',
