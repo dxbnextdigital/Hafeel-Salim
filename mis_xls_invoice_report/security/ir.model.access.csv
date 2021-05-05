@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_wizard_invoice_history_invent_man,wizard_invoice_history_invent_man,model_wizard_invoice_history,account.group_account_manager,1,1,1,1
+access_wizard_creditnote_history_invent_man,wizard_creditnote_history_invent_man,model_wizard_creditnote_history,account.group_account_manager,1,1,1,1

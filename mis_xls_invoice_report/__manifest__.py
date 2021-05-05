@@ -18,6 +18,7 @@
     'data': [
             'views/wizard_view.xml',
             'views/action_manager.xml',
+            'views/crditnote_wizard_view.xml',
             'security/ir.model.access.csv',
             ],
 
