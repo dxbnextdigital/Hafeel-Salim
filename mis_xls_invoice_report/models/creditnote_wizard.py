@@ -31,20 +31,17 @@ class CreditNoteReport(models.TransientModel):
                                                       ('invoice_date', '<=', self.end_date), ('state', '=', 'posted'),
                                                     ('move_type', '=', 'out_refund')])
 
-
-
         date = datetime.now()
         report_name = 'creditnote_' + date.strftime("%y%m%d%H%M%S")
         date_string = date.strftime("%B-%y")
         filename = '%s %s' % (report_name, date_string)
-
 
         fp = io.BytesIO()
         workbook = xlsxwriter.Workbook(fp)
         wbf = {}
 
         comp = self.env.user.company_id.name
-        sheet = workbook.add_worksheet('Sales Info')
+        sheet = workbook.add_worksheet('Creditnote Info')
         format0 = workbook.add_format({'font_size': 20, 'align': 'center', 'bold': True})
         format1 = workbook.add_format({'font_size': 14, 'align': 'vcenter', 'bold': True})
         format11 = workbook.add_format({'font_size': 12, 'align': 'center', 'bold': True})
@@ -161,16 +158,71 @@ class CreditNoteReport(models.TransientModel):
 
         summary_sales_person = {}
         summary_partner = {}
+        summary_product = {}
         for rec in objinvoice:
+            objline = self.env['account.move.line'].search([('move_id', '=', rec.id),
+                                                      ('product_id', '!=', False)])
+            for recln in objline:
+                #raise UserError(recln.product_id.id)
+                if (recln.product_id.id in summary_product):
+                    #raise UserError(recln.product_id.id)
+                    dic_product= summary_product[recln.product_id.id]
+                    dic_product['price_unit']+=recln.price_unit
+                    dic_product['qty'] += recln.quantity
+                    dic_product['price_subtotal'] += recln.price_subtotal
+                    dic_product['price_total'] += recln.price_total
+                    summary_product[recln.product_id.id] =dic_product
+                else:
+                    dic_product = {'product_id': recln.product_id, 'qty': recln.quantity,
+                                   'price_unit': recln.price_unit,
+                                   'price_subtotal': recln.price_subtotal,
+                                   'price_total': recln.price_total,
+                                   }
+                    summary_product[recln.product_id.id] = dic_product
             ####################### Sales Person Due Report
             if (rec.invoice_user_id.name in summary_sales_person):
                 dic_salesperson = summary_sales_person[rec.invoice_user_id.name]
+                dic_sp_product = dic_salesperson['product']
+                for recln in objline:
+                    if (recln.product_id.id in dic_sp_product):
+                        dic_product = dic_sp_product[recln.product_id.id]
+                        dic_product['price_unit'] += recln.price_unit
+                        dic_product['qty'] += recln.quantity
+                        dic_product['price_subtotal'] += recln.price_subtotal
+                        dic_product['price_total'] += recln.price_total
+                        dic_sp_product[recln.product_id.id]=dic_product
+                    else:
+                        dic_product = {'product_id': recln.product_id, 'qty': recln.quantity,
+                                          'price_unit': recln.price_unit,
+                                          'price_subtotal': recln.price_subtotal,
+                                          'price_total': recln.price_total,
+                                          }
+                        dic_sp_product[recln.product_id.id] = dic_product
+
+                dic_salesperson['product'] = dic_sp_product
                 dic_salesperson['totalinvoice'] = dic_salesperson['totalinvoice'] + rec.amount_total_signed
                 dic_salesperson['totaldue'] = dic_salesperson['totaldue'] + rec.amount_residual_signed
                 summary_sales_person[rec.invoice_user_id.name] = dic_salesperson
             else:
-                dic_salesperson = {}
-                dic_salesperson = {'totalinvoice': rec.amount_total_signed, 'totaldue': rec.amount_residual_signed}
+                dic_sp_product={}
+                for recln in objline:
+                    if (recln.product_id.id in dic_sp_product):
+                        dic_product = dic_sp_product[recln.product_id.id]
+                        dic_product['price_unit'] += recln.price_unit
+                        dic_product['qty'] += recln.quantity
+                        dic_product['price_subtotal'] += recln.price_subtotal
+                        dic_product['price_total'] += recln.price_total
+                        dic_sp_product[recln.product_id.id] = dic_product
+                    else:
+                        dic_product = {'product_id': recln.product_id, 'qty': recln.quantity,
+                                       'price_unit': recln.price_unit,
+                                       'price_subtotal': recln.price_subtotal,
+                                       'price_total': recln.price_total,
+                                       }
+                        dic_sp_product[recln.product_id.id] = dic_product
+
+                dic_salesperson = {'totalinvoice': rec.amount_total_signed, 'totaldue': rec.amount_residual_signed,
+                                   'product' : dic_sp_product}
                 summary_sales_person[rec.invoice_user_id.name] = dic_salesperson
 
             ####################### Partner Due Report
@@ -216,50 +268,162 @@ class CreditNoteReport(models.TransientModel):
         sheet.write(rowno, colno, "=sum(H2:H" + str(rowno) + ")", wbf['content_float_border_total'])
         colno = 8
         sheet.write(rowno, colno, "=sum(I2:I" + str(rowno) + ")", wbf['content_float_border_total'])
-
         rowno += 1
+        #####################################  Credit Note by product
 
+        worksheet2 = workbook.add_worksheet('By Product')
 
+        colno = 0
+        column_width = 20
+        worksheet2.set_column(colno, colno, column_width)
+        worksheet2.write(0, colno, 'Barode', wbf['content_border_bg'])
+
+        colno += 1
+        column_width = 100
+        worksheet2.set_column(colno, colno, column_width)
+        worksheet2.write(0, colno, 'Product Name', wbf['content_border_bg'])
+        colno += 1
+        column_width = 15
+        worksheet2.set_column(colno, colno, column_width)
+        worksheet2.write(0, colno, 'Qty', wbf['content_border_bg'])
+
+        colno += 1
+        column_width = 15
+        worksheet2.set_column(colno, colno, column_width)
+        worksheet2.write(0, colno, 'Unit Price', wbf['content_border_bg'])
+
+        colno += 1
+        column_width = 30
+        worksheet2.set_column(colno, colno, column_width)
+        worksheet2.write(0, colno, 'Total Price', wbf['content_border_bg'])
+
+        rowno = 1
+        colno = 0
+        for recproduct in summary_product:
+            dic_pro = summary_product[recproduct]
+            colno = 0
+            worksheet2.write(rowno, colno, dic_pro['product_id'].barcode, wbf['content_border'])
+            colno += 1
+            worksheet2.write(rowno, colno, dic_pro['product_id'].name, wbf['content_border'])
+            colno += 1
+            worksheet2.write(rowno, colno, dic_pro['qty'], wbf['content_int_border'])
+            colno += 1
+            worksheet2.write(rowno, colno, dic_pro['price_total'] / dic_pro['qty'] if dic_pro['qty'] else 1, wbf['content_float_border'])
+            colno += 1
+            worksheet2.write(rowno, colno, dic_pro['price_total'], wbf['content_float_border'])
+            rowno += 1
+
+        worksheet2.merge_range(rowno, 0, rowno, 1, "Total", wbf['content_border_bg'])
+        colno = 2
+        worksheet2.write(rowno, colno, "=sum(C2:C" + str(rowno) + ")", wbf['content_int_border_total'])
+        colno += 1
+        worksheet2.write(rowno, colno, "", wbf['content_float_border_total'])
+        colno += 1
+        worksheet2.write(rowno, colno, "=sum(E2:E" + str(rowno) + ")", wbf['content_float_border_total'])
 
         #####################################  Sales Person
-        worksheet2 = workbook.add_worksheet('Sales Person Due Summary')
+        worksheet4 = workbook.add_worksheet('Sales Person Summary')
 
         colno = 0
         column_width = 50
-        worksheet2.set_column(colno, colno, column_width)
-        worksheet2.write(0, colno, 'Sales Person Name', wbf['content_border_bg'])
+        worksheet4.set_column(colno, colno, column_width)
+        worksheet4.write(0, colno, 'Sales Person Name', wbf['content_border_bg'])
 
         colno += 1
         column_width = 30
-        worksheet2.set_column(colno, colno, column_width)
-        worksheet2.write(0, colno, 'Total Invoice', wbf['content_border_bg'])
+        worksheet4.set_column(colno, colno, column_width)
+        worksheet4.write(0, colno, 'Total Invoice', wbf['content_border_bg'])
 
         colno += 1
         column_width = 30
-        worksheet2.set_column(colno, colno, column_width)
-        worksheet2.write(0, colno, 'Total Due', wbf['content_border_bg'])
+        worksheet4.set_column(colno, colno, column_width)
+        worksheet4.write(0, colno, 'Total Due', wbf['content_border_bg'])
 
         rowno = 1
         colno = 0
         for recseleperson in summary_sales_person:
 
             colno = 0
-            worksheet2.write(rowno, colno, recseleperson if recseleperson else '', wbf['content_border'])
+            worksheet4.write(rowno, colno, recseleperson if recseleperson else '', wbf['content_border'])
             colno += 1
             dic_sales_persons = summary_sales_person[recseleperson]
-            worksheet2.write(rowno, colno, dic_sales_persons['totalinvoice'], wbf['content_float_border'])
+            worksheet4.write(rowno, colno, dic_sales_persons['totalinvoice'], wbf['content_float_border'])
             colno += 1
 
-            worksheet2.write(rowno, colno, dic_sales_persons['totaldue'], wbf['content_float_border'])
+            worksheet4.write(rowno, colno, dic_sales_persons['totaldue'], wbf['content_float_border'])
             rowno += 1
-        worksheet2.write(rowno, 0, "Total", wbf['content_border_bg'])
+        worksheet4.write(rowno, 0, "Total", wbf['content_border_bg'])
         colno = 1
-        worksheet2.write(rowno, colno, "=sum(B2:B" + str(rowno) + ")", wbf['content_float_border_total'])
+        worksheet4.write(rowno, colno, "=sum(B2:B" + str(rowno) + ")", wbf['content_float_border_total'])
         colno += 1
-        worksheet2.write(rowno, colno, "=sum(C2:C" + str(rowno) + ")", wbf['content_float_border_total'])
+        worksheet4.write(rowno, colno, "=sum(C2:C" + str(rowno) + ")", wbf['content_float_border_total'])
+
+        #####################################  product by Sales Person
+
+        worksheet5 = workbook.add_worksheet('Product  By Sales Person')
+
+        colno = 0
+        column_width = 30
+        worksheet5.set_column(colno, colno, column_width)
+        worksheet5.write(0, colno, 'Sales Person Name', wbf['content_border_bg'])
+
+        colno += 1
+        column_width = 20
+        worksheet5.set_column(colno, colno, column_width)
+        worksheet5.write(0, colno, 'Barode', wbf['content_border_bg'])
+
+        colno += 1
+        column_width = 100
+        worksheet5.set_column(colno, colno, column_width)
+        worksheet5.write(0, colno, 'Product Name', wbf['content_border_bg'])
+        colno += 1
+        column_width = 15
+        worksheet5.set_column(colno, colno, column_width)
+        worksheet5.write(0, colno, 'Qty', wbf['content_border_bg'])
+
+        colno += 1
+        column_width = 15
+        worksheet5.set_column(colno, colno, column_width)
+        worksheet5.write(0, colno, 'Unit Price', wbf['content_border_bg'])
+
+        colno += 1
+        column_width = 20
+        worksheet5.set_column(colno, colno, column_width)
+        worksheet5.write(0, colno, 'Total Price', wbf['content_border_bg'])
+
+        rowno = 1
+        colno = 0
+        for recseleperson in summary_sales_person:
+
+
+            dic_sales_persons = summary_sales_person[recseleperson]
+            dic_pro=dic_sales_persons["product"]
+            for recproduct in summary_product:
+                colno = 0
+                worksheet5.write(rowno, colno, recseleperson if recseleperson else '', wbf['content_border'])
+                dic_pro = summary_product[recproduct]
+                colno += 1
+                worksheet5.write(rowno, colno, dic_pro['product_id'].barcode, wbf['content_border'])
+                colno += 1
+                worksheet5.write(rowno, colno, dic_pro['product_id'].name, wbf['content_border'])
+                colno += 1
+                worksheet5.write(rowno, colno, dic_pro['qty'], wbf['content_int_border'])
+                colno += 1
+                worksheet5.write(rowno, colno, dic_pro['price_total'] / dic_pro['qty'] if dic_pro['qty'] else 1, wbf['content_float_border'])
+                colno += 1
+                worksheet5.write(rowno, colno, dic_pro['price_total'], wbf['content_float_border'])
+                rowno += 1
+
+        worksheet5.merge_range(rowno, 0, rowno, 2, "Total", wbf['content_border_bg'])
+        colno = 3
+        worksheet5.write(rowno, colno, "=sum(D2:d" + str(rowno) + ")", wbf['content_int_border_total'])
+        colno += 1
+        worksheet5.write(rowno, colno, "", wbf['content_float_border_total'])
+        colno += 1
+        worksheet5.write(rowno, colno, "=sum(F2:F" + str(rowno) + ")", wbf['content_float_border_total'])
 
         ########################Partner sales
-        worksheet3 = workbook.add_worksheet('Customer Due Summary')
+        worksheet3 = workbook.add_worksheet('Customer wise Summary')
 
         colno = 0
         column_width = 50
