@@ -204,25 +204,25 @@ class CreditNoteReport(models.TransientModel):
                 dic_salesperson['totaldue'] = dic_salesperson['totaldue'] + rec.amount_residual_signed
                 summary_sales_person[rec.invoice_user_id.name] = dic_salesperson
             else:
-                dic_sp_product={}
+                dic_sp_product1={}
                 for recln in objline:
-                    if (recln.product_id.id in dic_sp_product):
-                        dic_product = dic_sp_product[recln.product_id.id]
-                        dic_product['price_unit'] += recln.price_unit
-                        dic_product['qty'] += recln.quantity
-                        dic_product['price_subtotal'] += recln.price_subtotal
-                        dic_product['price_total'] += recln.price_total
-                        dic_sp_product[recln.product_id.id] = dic_product
+                    if (recln.product_id.id in dic_sp_product1):
+                        dic_product1 = dic_sp_product1[recln.product_id.id]
+                        dic_product1['price_unit'] += recln.price_unit
+                        dic_product1['qty'] += recln.quantity
+                        dic_product1['price_subtotal'] += recln.price_subtotal
+                        dic_product1['price_total'] += recln.price_total
+                        dic_sp_product1[recln.product_id.id] = dic_product
                     else:
-                        dic_product = {'product_id': recln.product_id, 'qty': recln.quantity,
+                        dic_product1 = {'product_id': recln.product_id, 'qty': recln.quantity,
                                        'price_unit': recln.price_unit,
                                        'price_subtotal': recln.price_subtotal,
                                        'price_total': recln.price_total,
                                        }
-                        dic_sp_product[recln.product_id.id] = dic_product
+                        dic_sp_product1[recln.product_id.id] = dic_product
 
                 dic_salesperson = {'totalinvoice': rec.amount_total_signed, 'totaldue': rec.amount_residual_signed,
-                                   'product' : dic_sp_product}
+                                   'product' : dic_sp_product1}
                 summary_sales_person[rec.invoice_user_id.name] = dic_salesperson
 
             ####################### Partner Due Report
