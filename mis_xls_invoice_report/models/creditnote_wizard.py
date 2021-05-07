@@ -212,14 +212,14 @@ class CreditNoteReport(models.TransientModel):
                         dic_product1['qty'] += recln.quantity
                         dic_product1['price_subtotal'] += recln.price_subtotal
                         dic_product1['price_total'] += recln.price_total
-                        dic_sp_product1[recln.product_id.id] = dic_product
+                        dic_sp_product1[recln.product_id.id] = dic_product1
                     else:
                         dic_product1 = {'product_id': recln.product_id, 'qty': recln.quantity,
                                        'price_unit': recln.price_unit,
                                        'price_subtotal': recln.price_subtotal,
                                        'price_total': recln.price_total,
                                        }
-                        dic_sp_product1[recln.product_id.id] = dic_product
+                        dic_sp_product1[recln.product_id.id] = dic_product1
 
                 dic_salesperson = {'totalinvoice': rec.amount_total_signed, 'totaldue': rec.amount_residual_signed,
                                    'product' : dic_sp_product1}
