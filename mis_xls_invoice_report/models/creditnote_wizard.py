@@ -173,7 +173,7 @@ class CreditNoteReport(models.TransientModel):
                     dic_product['price_total'] += recln.price_total
                     summary_product[recln.product_id.id] =dic_product
                 else:
-                    dic_product = {'product_id': recln.product_id, 'qty': recln.quantity,
+                    dic_product = {'id': recln.product_id.id,'product_id': recln.product_id, 'qty': recln.quantity,
                                    'price_unit': recln.price_unit,
                                    'price_subtotal': recln.price_subtotal,
                                    'price_total': recln.price_total,
@@ -192,7 +192,7 @@ class CreditNoteReport(models.TransientModel):
                         dic_product['price_total'] += recln.price_total
                         dic_sp_product[recln.product_id.id]=dic_product
                     else:
-                        dic_product = {'product_id': recln.product_id, 'qty': recln.quantity,
+                        dic_product = {'id': recln.product_id.id,'product_id': recln.product_id, 'qty': recln.quantity,
                                           'price_unit': recln.price_unit,
                                           'price_subtotal': recln.price_subtotal,
                                           'price_total': recln.price_total,
@@ -214,7 +214,7 @@ class CreditNoteReport(models.TransientModel):
                         dic_product1['price_total'] += recln.price_total
                         dic_sp_product1[recln.product_id.id] = dic_product1
                     else:
-                        dic_product1 = {'product_id': recln.product_id, 'qty': recln.quantity,
+                        dic_product1 = {'id': recln.product_id.id,'product_id': recln.product_id, 'qty': recln.quantity,
                                        'price_unit': recln.price_unit,
                                        'price_subtotal': recln.price_subtotal,
                                        'price_total': recln.price_total,
@@ -394,24 +394,22 @@ class CreditNoteReport(models.TransientModel):
         rowno = 1
         colno = 0
         for recseleperson in summary_sales_person:
-
-
             dic_sales_persons = summary_sales_person[recseleperson]
             dic_pro=dic_sales_persons["product"]
-            for recproduct in summary_product:
+            for recproduct in dic_pro:
                 colno = 0
                 worksheet5.write(rowno, colno, recseleperson if recseleperson else '', wbf['content_border'])
-                dic_pro = summary_product[recproduct]
+                dic_pro_print = dic_pro[recproduct]
                 colno += 1
-                worksheet5.write(rowno, colno, dic_pro['product_id'].barcode, wbf['content_border'])
+                worksheet5.write(rowno, colno, dic_pro_print['product_id'].barcode if dic_pro_print['product_id'].barcode else "", wbf['content_border'])
                 colno += 1
-                worksheet5.write(rowno, colno, dic_pro['product_id'].name, wbf['content_border'])
+                worksheet5.write(rowno, colno, dic_pro_print['product_id'].name, wbf['content_border'])
                 colno += 1
-                worksheet5.write(rowno, colno, dic_pro['qty'], wbf['content_int_border'])
+                worksheet5.write(rowno, colno, dic_pro_print['qty'], wbf['content_int_border'])
                 colno += 1
-                worksheet5.write(rowno, colno, dic_pro['price_total'] / dic_pro['qty'] if dic_pro['qty'] else 1, wbf['content_float_border'])
+                worksheet5.write(rowno, colno, dic_pro_print['price_total'] / dic_pro_print['qty'] if dic_pro_print['qty'] else 1, wbf['content_float_border'])
                 colno += 1
-                worksheet5.write(rowno, colno, dic_pro['price_total'], wbf['content_float_border'])
+                worksheet5.write(rowno, colno, dic_pro_print['price_total'], wbf['content_float_border'])
                 rowno += 1
 
         worksheet5.merge_range(rowno, 0, rowno, 2, "Total", wbf['content_border_bg'])
