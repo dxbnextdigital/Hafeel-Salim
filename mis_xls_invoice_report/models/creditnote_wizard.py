@@ -161,7 +161,7 @@ class CreditNoteReport(models.TransientModel):
         summary_product = {}
         for rec in objinvoice:
             objline = self.env['account.move.line'].search([('move_id', '=', rec.id),
-                                                      ('product_id', '!=', False)])
+                                                      ('exclude_from_invoice_tab','=', False)])
             for recln in objline:
                 #raise UserError(recln.product_id.id)
                 if (recln.product_id.id in summary_product):
@@ -269,6 +269,100 @@ class CreditNoteReport(models.TransientModel):
         colno = 8
         sheet.write(rowno, colno, "=sum(I2:I" + str(rowno) + ")", wbf['content_float_border_total'])
         rowno += 1
+
+        #####################################  Credit Note details
+        worksheet6 = workbook.add_worksheet('Credit note Details')
+
+        colno = 0
+        column_width = 10
+        worksheet6.set_column(colno, colno, column_width)
+        worksheet6.write(0, colno, 'Sl#', wbf['content_border_bg'])
+
+        colno += 1
+        column_width = 20
+        worksheet6.set_column(colno, colno, column_width)
+        worksheet6.write(0, colno, 'Invoice No', wbf['content_border_bg'])
+
+        colno += 1
+        column_width = 15
+        worksheet6.set_column(colno, colno, column_width)
+        worksheet6.write(0, colno, 'Invoice Date', wbf['content_border_bg'])
+
+        colno += 1
+        column_width = 25
+        worksheet6.set_column(colno, colno, column_width)
+        worksheet6.write(0, colno, 'Sales Person', wbf['content_border_bg'])
+
+        colno += 1
+        column_width = 50
+        worksheet6.set_column(colno, colno, column_width)
+        worksheet6.write(0, colno, 'Partner Name', wbf['content_border_bg'])
+        colno += 1
+        column_width = 20
+        worksheet6.set_column(colno, colno, column_width)
+        worksheet6.write(0, colno, 'Barode', wbf['content_border_bg'])
+
+        colno += 1
+        column_width = 100
+        worksheet6.set_column(colno, colno, column_width)
+        worksheet6.write(0, colno, 'Product Name', wbf['content_border_bg'])
+        colno += 1
+        column_width = 15
+        worksheet6.set_column(colno, colno, column_width)
+        worksheet6.write(0, colno, 'Qty', wbf['content_border_bg'])
+
+        colno += 1
+        column_width = 15
+        worksheet6.set_column(colno, colno, column_width)
+        worksheet6.write(0, colno, 'Unit Price', wbf['content_border_bg'])
+
+        colno += 1
+        column_width = 30
+        worksheet6.set_column(colno, colno, column_width)
+        worksheet6.write(0, colno, 'Total Price', wbf['content_border_bg'])
+        rowno = 1
+        for rec in objinvoice:
+            objline = self.env['account.move.line'].search([('move_id', '=', rec.id),
+                                                       ('exclude_from_invoice_tab','=', False)])
+            for recln in objline:
+                colno = 0
+                worksheet6.write(rowno, colno, rowno, wbf['content_border'])
+
+                colno += 1
+                worksheet6.write(rowno, colno, str(rec.name if rec.name else ""), wbf['content_border'])
+
+                colno += 1
+                worksheet6.write(rowno, colno, str(rec.invoice_date.strftime('%d-%m-%Y')), wbf['content_border'])
+
+                colno += 1
+                worksheet6.write(rowno, colno, str(rec.invoice_user_id.name if rec.invoice_user_id.name else ""),
+                            wbf['content_border'])
+                colno += 1
+                worksheet6.write(rowno, colno, rec.partner_id.name if rec.partner_id.name else "", wbf['content_border'])
+
+                colno += 1
+                worksheet6.write(rowno, colno, recln.product_id.barcode if recln.product_id.barcode else "", wbf['content_border'])
+                colno += 1
+                worksheet6.write(rowno, colno, recln.product_id.name, wbf['content_border'])
+                colno += 1
+                worksheet6.write(rowno, colno, recln.quantity, wbf['content_int_border'])
+                colno += 1
+                worksheet6.write(rowno, colno, recln.price_total,
+                                 wbf['content_float_border'])
+                colno += 1
+                worksheet6.write(rowno, colno, recln.price_total, wbf['content_float_border'])
+                rowno += 1
+
+        worksheet6.merge_range(rowno, 0, rowno, 6, "Total", wbf['content_border_bg'])
+        colno = 7
+        worksheet6.write(rowno, colno, "=sum(H2:H" + str(rowno) + ")", wbf['content_float_border_total'])
+        colno = 8
+        worksheet6.write(rowno, colno, "", wbf['content_float_border_total'])
+        colno = 9
+        worksheet6.write(rowno, colno, "=sum(J2:J" + str(rowno) + ")", wbf['content_float_border_total'])
+        rowno += 1
+
+
         #####################################  Credit Note by product
 
         worksheet2 = workbook.add_worksheet('By Product')
