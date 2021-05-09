@@ -161,7 +161,7 @@ class CreditNoteReport(models.TransientModel):
         summary_product = {}
         for rec in objinvoice:
             objline = self.env['account.move.line'].search([('move_id', '=', rec.id),
-                                                      ('exclude_from_invoice_tab','=', False)])
+                                                      ('product_id', '!=', False), ('exclude_from_invoice_tab','=', False)])
             for recln in objline:
                 #raise UserError(recln.product_id.id)
                 if (recln.product_id.id in summary_product):
@@ -323,7 +323,7 @@ class CreditNoteReport(models.TransientModel):
         rowno = 1
         for rec in objinvoice:
             objline = self.env['account.move.line'].search([('move_id', '=', rec.id),
-                                                       ('exclude_from_invoice_tab','=', False)])
+                                                      ('product_id', '!=', False), ('exclude_from_invoice_tab','=', False)])
             for recln in objline:
                 colno = 0
                 worksheet6.write(rowno, colno, rowno, wbf['content_border'])
