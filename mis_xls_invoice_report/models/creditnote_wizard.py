@@ -297,6 +297,12 @@ class CreditNoteReport(models.TransientModel):
         column_width = 50
         worksheet6.set_column(colno, colno, column_width)
         worksheet6.write(0, colno, 'Partner Name', wbf['content_border_bg'])
+
+        colno += 1
+        column_width = 25
+        worksheet6.set_column(colno, colno, column_width)
+        worksheet6.write(0, colno, 'Category', wbf['content_border_bg'])
+
         colno += 1
         column_width = 20
         worksheet6.set_column(colno, colno, column_width)
@@ -306,6 +312,28 @@ class CreditNoteReport(models.TransientModel):
         column_width = 100
         worksheet6.set_column(colno, colno, column_width)
         worksheet6.write(0, colno, 'Product Name', wbf['content_border_bg'])
+
+        colno += 1
+        column_width = 25
+        worksheet6.set_column(colno, colno, column_width)
+        worksheet6.write(0, colno, 'Analytic Tag', wbf['content_border_bg'])
+
+        colno += 1
+        column_width = 20
+        worksheet6.set_column(colno, colno, column_width)
+        worksheet6.write(0, colno, 'Cost', wbf['content_border_bg'])
+
+        colno += 1
+        column_width = 20
+        worksheet6.set_column(colno, colno, column_width)
+        worksheet6.write(0, colno, 'Sales Price', wbf['content_border_bg'])
+
+        colno += 1
+        column_width = 20
+        worksheet6.set_column(colno, colno, column_width)
+        worksheet6.write(0, colno, 'Unit Profit', wbf['content_border_bg'])
+
+
         colno += 1
         column_width = 15
         worksheet6.set_column(colno, colno, column_width)
@@ -320,6 +348,12 @@ class CreditNoteReport(models.TransientModel):
         column_width = 30
         worksheet6.set_column(colno, colno, column_width)
         worksheet6.write(0, colno, 'Total Price', wbf['content_border_bg'])
+
+        colno += 1
+        column_width = 30
+        worksheet6.set_column(colno, colno, column_width)
+        worksheet6.write(0, colno, 'Total Profit', wbf['content_border_bg'])
+
         rowno = 1
         for rec in objinvoice:
             objline = self.env['account.move.line'].search([('move_id', '=', rec.id),
@@ -341,25 +375,52 @@ class CreditNoteReport(models.TransientModel):
                 worksheet6.write(rowno, colno, rec.partner_id.name if rec.partner_id.name else "", wbf['content_border'])
 
                 colno += 1
+                worksheet6.write(rowno, colno,  recln.product_id.categ_id.name if recln.product_id.categ_id.name  else "",
+                                 wbf['content_border'])
+
+                colno += 1
                 worksheet6.write(rowno, colno, recln.product_id.barcode if recln.product_id.barcode else "", wbf['content_border'])
                 colno += 1
                 worksheet6.write(rowno, colno, recln.product_id.name, wbf['content_border'])
                 colno += 1
+                tagname = ''
+                for analytic_tag in recln.analytic_tag_ids:
+                    tagname += analytic_tag.name
+
+                worksheet6.write(rowno, colno, tagname, wbf['content_border'])
+
+                colno += 1
+                worksheet6.write(rowno, colno, recln.product_id.standard_price, wbf['content_float_border'])
+
+                colno += 1
+                worksheet6.write(rowno, colno, recln.product_id.list_price, wbf['content_float_border'])
+                colno += 1
+                worksheet6.write(rowno, colno, (recln.product_id.list_price-recln.product_id.standard_price), wbf['content_float_border'])
+
+                colno += 1
+                qtycol=colno
                 worksheet6.write(rowno, colno, recln.quantity, wbf['content_int_border'])
                 colno += 1
                 worksheet6.write(rowno, colno, recln.price_total,
                                  wbf['content_float_border'])
                 colno += 1
                 worksheet6.write(rowno, colno, recln.price_total, wbf['content_float_border'])
+                colno += 1
+                worksheet6.write(rowno, colno, (recln.quantity*(recln.product_id.list_price-recln.product_id.standard_price)), wbf['content_float_border'])
+
                 rowno += 1
 
-        worksheet6.merge_range(rowno, 0, rowno, 6, "Total", wbf['content_border_bg'])
-        colno = 7
-        worksheet6.write(rowno, colno, "=sum(H2:H" + str(rowno) + ")", wbf['content_float_border_total'])
-        colno = 8
+        worksheet6.merge_range(rowno, 0, rowno, qtycol-1, "Total", wbf['content_border_bg'])
+        colno = qtycol
+        worksheet6.write(rowno, colno, "=sum(" + str(chr(97+colno)) +"2:" + str(chr(97+colno)) +"" + str(rowno) + ")", wbf['content_float_border_total'])
+        colno += 1
         worksheet6.write(rowno, colno, "", wbf['content_float_border_total'])
-        colno = 9
-        worksheet6.write(rowno, colno, "=sum(J2:J" + str(rowno) + ")", wbf['content_float_border_total'])
+        colno += 1
+        worksheet6.write(rowno, colno, "=sum(" + str(chr(97+colno)) +"2:" + str(chr(97+colno)) +"" + str(rowno) + ")", wbf['content_float_border_total'])
+        colno += 1
+        worksheet6.write(rowno, colno,
+                         "=sum(" + str(chr(97 +colno)) + "2:" + str(chr(97 +colno)) + "" + str(rowno) + ")",
+                         wbf['content_float_border_total'])
         rowno += 1
 
 
@@ -368,6 +429,10 @@ class CreditNoteReport(models.TransientModel):
         worksheet2 = workbook.add_worksheet('By Product')
 
         colno = 0
+        column_width = 25
+        worksheet2.set_column(colno, colno, column_width)
+        worksheet2.write(0, colno, 'Category', wbf['content_border_bg'])
+        colno += 1
         column_width = 20
         worksheet2.set_column(colno, colno, column_width)
         worksheet2.write(0, colno, 'Barode', wbf['content_border_bg'])
@@ -396,24 +461,28 @@ class CreditNoteReport(models.TransientModel):
         for recproduct in summary_product:
             dic_pro = summary_product[recproduct]
             colno = 0
-            worksheet2.write(rowno, colno, dic_pro['product_id'].barcode, wbf['content_border'])
+            worksheet2.write(rowno, colno, dic_pro['product_id'].categ_id.name if dic_pro['product_id'].categ_id.name else "", wbf['content_border'])
+            colno += 1
+            worksheet2.write(rowno, colno, dic_pro['product_id'].barcode if dic_pro['product_id'].barcode else "", wbf['content_border'])
             colno += 1
             worksheet2.write(rowno, colno, dic_pro['product_id'].name, wbf['content_border'])
             colno += 1
+            qtycol = colno
             worksheet2.write(rowno, colno, dic_pro['qty'], wbf['content_int_border'])
             colno += 1
+
             worksheet2.write(rowno, colno, dic_pro['price_total'] / dic_pro['qty'] if dic_pro['qty'] else 1, wbf['content_float_border'])
             colno += 1
             worksheet2.write(rowno, colno, dic_pro['price_total'], wbf['content_float_border'])
             rowno += 1
 
-        worksheet2.merge_range(rowno, 0, rowno, 1, "Total", wbf['content_border_bg'])
-        colno = 2
-        worksheet2.write(rowno, colno, "=sum(C2:C" + str(rowno) + ")", wbf['content_int_border_total'])
+        worksheet2.merge_range(rowno, 0, rowno, qtycol-1, "Total", wbf['content_border_bg'])
+        colno = qtycol
+        worksheet2.write(rowno, colno, "=sum(" + str(chr(97+qtycol)) +"2:" + str(chr(97+qtycol)) +"" + str(rowno) + ")", wbf['content_int_border_total'])
         colno += 1
         worksheet2.write(rowno, colno, "", wbf['content_float_border_total'])
         colno += 1
-        worksheet2.write(rowno, colno, "=sum(E2:E" + str(rowno) + ")", wbf['content_float_border_total'])
+        worksheet2.write(rowno, colno, "=sum(" + str(chr(97+qtycol+2)) +"2:" + str(chr(97+qtycol+2)) +"" + str(rowno) + ")", wbf['content_float_border_total'])
 
         #####################################  Sales Person
         worksheet4 = workbook.add_worksheet('Sales Person Summary')
@@ -462,6 +531,12 @@ class CreditNoteReport(models.TransientModel):
         worksheet5.write(0, colno, 'Sales Person Name', wbf['content_border_bg'])
 
         colno += 1
+        column_width = 25
+        worksheet5.set_column(colno, colno, column_width)
+        worksheet5.write(0, colno, 'Category', wbf['content_border_bg'])
+
+
+        colno += 1
         column_width = 20
         worksheet5.set_column(colno, colno, column_width)
         worksheet5.write(0, colno, 'Barode', wbf['content_border_bg'])
@@ -495,24 +570,29 @@ class CreditNoteReport(models.TransientModel):
                 worksheet5.write(rowno, colno, recseleperson if recseleperson else '', wbf['content_border'])
                 dic_pro_print = dic_pro[recproduct]
                 colno += 1
+                worksheet5.write(rowno, colno,
+                                 dic_pro_print['product_id'].categ_id.name if dic_pro_print['product_id'].categ_id.name else "",
+                                 wbf['content_border'])
+                colno += 1
                 worksheet5.write(rowno, colno, dic_pro_print['product_id'].barcode if dic_pro_print['product_id'].barcode else "", wbf['content_border'])
                 colno += 1
                 worksheet5.write(rowno, colno, dic_pro_print['product_id'].name, wbf['content_border'])
                 colno += 1
                 worksheet5.write(rowno, colno, dic_pro_print['qty'], wbf['content_int_border'])
+                qtycol =colno
                 colno += 1
                 worksheet5.write(rowno, colno, dic_pro_print['price_total'] / dic_pro_print['qty'] if dic_pro_print['qty'] else 1, wbf['content_float_border'])
                 colno += 1
                 worksheet5.write(rowno, colno, dic_pro_print['price_total'], wbf['content_float_border'])
                 rowno += 1
 
-        worksheet5.merge_range(rowno, 0, rowno, 2, "Total", wbf['content_border_bg'])
-        colno = 3
-        worksheet5.write(rowno, colno, "=sum(D2:d" + str(rowno) + ")", wbf['content_int_border_total'])
+        worksheet5.merge_range(rowno, 0, rowno, qtycol-1, "Total", wbf['content_border_bg'])
+        colno = qtycol
+        worksheet5.write(rowno, colno, "=sum(" + str(chr(97+qtycol)) +"2:" + str(chr(97+qtycol)) + str(rowno) + ")", wbf['content_int_border_total'])
         colno += 1
         worksheet5.write(rowno, colno, "", wbf['content_float_border_total'])
         colno += 1
-        worksheet5.write(rowno, colno, "=sum(F2:F" + str(rowno) + ")", wbf['content_float_border_total'])
+        worksheet5.write(rowno, colno, "=sum(" + str(chr(97+qtycol+2)) +"2:"+ str(chr(97+qtycol+2)) + str(rowno) + ")", wbf['content_float_border_total'])
 
         ########################Partner sales
         worksheet3 = workbook.add_worksheet('Customer wise Summary')
