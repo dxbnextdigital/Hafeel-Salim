@@ -164,6 +164,13 @@ class SaleOrderLine(models.Model):
                     avlqty+=recst.quantity
                 rec.my_stock=avlqty
 
+    @api.onchange('price_unit')
+    def _checkbelowcost(self):
+        print('test')
+        for rec in self:
+            if rec.product_id.min_sale_price > rec.price_unit:
+                raise UserError(_("Set Minimum price is %s, cannot sell below" %str("{:.2f}".format(rec.product_id.min_sale_price))))
+
 
     def _prepare_invoice_custom(self):
         """
