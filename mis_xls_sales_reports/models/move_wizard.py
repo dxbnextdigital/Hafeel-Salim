@@ -354,8 +354,7 @@ class SalesMoveReport(models.TransientModel):
         sheet.write(rowno, colno, "=sum(K2:K" + str(rowno) + ")", wbf['content_float_border_total'])
         colno += 1
         sheet.write(rowno, colno, "=sum(L2:L" + str(rowno) + ")", wbf['content_float_border_total'])
-        colno += 1
-        sheet.write(rowno, colno, "=sum(M2:M" + str(rowno) + ")", wbf['content_float_border_total'])
+
 
         total_col = colno
         colno =  total_col
