@@ -306,6 +306,11 @@ class CreditNoteReport(models.TransientModel):
         colno += 1
         column_width = 20
         worksheet6.set_column(colno, colno, column_width)
+        worksheet6.write(0, colno, 'Brand', wbf['content_border_bg'])
+
+        colno += 1
+        column_width = 20
+        worksheet6.set_column(colno, colno, column_width)
         worksheet6.write(0, colno, 'Barode', wbf['content_border_bg'])
 
         colno += 1
@@ -379,6 +384,10 @@ class CreditNoteReport(models.TransientModel):
                                  wbf['content_border'])
 
                 colno += 1
+                worksheet6.write(rowno, colno, recln.product_id.brand.name if recln.product_id.brand.name else "",
+                                 wbf['content_border'])
+
+                colno += 1
                 worksheet6.write(rowno, colno, recln.product_id.barcode if recln.product_id.barcode else "", wbf['content_border'])
                 colno += 1
                 worksheet6.write(rowno, colno, recln.product_id.name, wbf['content_border'])
@@ -432,6 +441,12 @@ class CreditNoteReport(models.TransientModel):
         column_width = 25
         worksheet2.set_column(colno, colno, column_width)
         worksheet2.write(0, colno, 'Category', wbf['content_border_bg'])
+
+        colno += 1
+        column_width = 20
+        worksheet2.set_column(colno, colno, column_width)
+        worksheet2.write(0, colno, 'Brand', wbf['content_border_bg'])
+
         colno += 1
         column_width = 20
         worksheet2.set_column(colno, colno, column_width)
@@ -462,6 +477,10 @@ class CreditNoteReport(models.TransientModel):
             dic_pro = summary_product[recproduct]
             colno = 0
             worksheet2.write(rowno, colno, dic_pro['product_id'].categ_id.name if dic_pro['product_id'].categ_id.name else "", wbf['content_border'])
+
+            colno += 1
+            worksheet2.write(rowno, colno, dic_pro['product_id'].brand.name if dic_pro['product_id'].brand.name else "",
+                             wbf['content_border'])
             colno += 1
             worksheet2.write(rowno, colno, dic_pro['product_id'].barcode if dic_pro['product_id'].barcode else "", wbf['content_border'])
             colno += 1
@@ -535,6 +554,10 @@ class CreditNoteReport(models.TransientModel):
         worksheet5.set_column(colno, colno, column_width)
         worksheet5.write(0, colno, 'Category', wbf['content_border_bg'])
 
+        colno += 1
+        column_width = 20
+        worksheet5.set_column(colno, colno, column_width)
+        worksheet5.write(0, colno, 'Brand', wbf['content_border_bg'])
 
         colno += 1
         column_width = 20
@@ -572,6 +595,11 @@ class CreditNoteReport(models.TransientModel):
                 colno += 1
                 worksheet5.write(rowno, colno,
                                  dic_pro_print['product_id'].categ_id.name if dic_pro_print['product_id'].categ_id.name else "",
+                                 wbf['content_border'])
+
+                colno += 1
+                worksheet5.write(rowno, colno,
+                                 dic_pro_print['product_id'].brand.name if dic_pro_print['product_id'].brand.name else "",
                                  wbf['content_border'])
                 colno += 1
                 worksheet5.write(rowno, colno, dic_pro_print['product_id'].barcode if dic_pro_print['product_id'].barcode else "", wbf['content_border'])
