@@ -129,6 +129,12 @@ class SalesReport(models.TransientModel):
         sheet.write(rowno-1, colno, 'Order Date', wbf['content_border_bg'])
 
         colno += 1
+        column_width = 15
+        sheet.set_column(colno, colno, column_width)
+        sheet.write(rowno - 1, colno, 'Sales Team', wbf['content_border_bg'])
+
+
+        colno += 1
         column_width = 25
         sheet.set_column(colno, colno, column_width)
         sheet.write(rowno - 1, colno, 'Sales Person', wbf['content_border_bg'])
@@ -144,6 +150,10 @@ class SalesReport(models.TransientModel):
         sheet.set_column(colno, colno, column_width)
         sheet.write(rowno-1, colno, 'Brand', wbf['content_border_bg'])
 
+        colno += 1
+        column_width = 20
+        sheet.set_column(colno, colno, column_width)
+        sheet.write(rowno - 1, colno, 'Category', wbf['content_border_bg'])
         colno += 1
         column_width = 15
         sheet.set_column(colno, colno, column_width)
@@ -236,9 +246,15 @@ class SalesReport(models.TransientModel):
             colno += 1
             sheet.write(rowno, colno, str(rec.order_id.date_order.strftime('%d-%m-%Y')), wbf['content_border'])
             colno += 1
+            sheet.write(rowno, colno, str(rec.order_id.team_id.name if rec.order_id.team_id.name else ""), wbf['content_border'])
+
+            colno += 1
             sheet.write(rowno, colno, str(rec.salesman_id.name if rec.salesman_id.name else ""), wbf['content_border'])
             colno += 1
             sheet.write(rowno, colno, str(rec.order_id.partner_id.name if rec.order_id.partner_id.name else ""), wbf['content_border'])
+            colno += 1
+            sheet.write(rowno, colno, rec.product_id.categ_id.name if rec.product_id.categ_id.name else "",
+                        wbf['content_border'])
             colno += 1
             sheet.write(rowno, colno, rec.product_id.brand.name if rec.product_id.brand.name else "", wbf['content_border'])
             colno += 1
@@ -274,15 +290,18 @@ class SalesReport(models.TransientModel):
             totqty=0
 
             rowno+=1
-        sheet.merge_range(rowno, 0, rowno, 10, "Total", wbf['content_border_bg'])
+        sheet.merge_range(rowno, 0, rowno, 11, "Total", wbf['content_border_bg'])
         colno = 11
-        sheet.write(rowno, colno, "=sum(L2:L"+str(rowno)+")", wbf['content_int_border_total'])
-        colno = 12
-        sheet.write(rowno, colno, "=sum(M2:M" + str(rowno) + ")", wbf['content_float_border_total'])
-        colno = 13
-        sheet.write(rowno, colno, "=sum(N2:N" + str(rowno) + ")", wbf['content_float_border_total'])
-        colno = 14
-        sheet.write(rowno, colno, "=sum(O2:O" + str(rowno) + ")", wbf['content_float_border_total'])
+        sheet.write(rowno, colno, "=sum(" + chr(65+colno) +"2:" + chr(65+colno) +str(rowno)+")", wbf['content_int_border_total'])
+        colno += 1
+        sheet.write(rowno, colno, "=sum(" + chr(65+colno) +"2:" + chr(65+colno) + str(rowno) + ")", wbf['content_float_border_total'])
+        colno += 1
+        sheet.write(rowno, colno, "=sum(" + chr(65+colno) +"2:" + chr(65+colno) + str(rowno) + ")", wbf['content_float_border_total'])
+        colno += 1
+        sheet.write(rowno, colno, "=sum(" + chr(65+colno) +"2:" + chr(65+colno) + str(rowno) + ")", wbf['content_float_border_total'])
+        colno += 1
+        sheet.write(rowno, colno, "=sum(" + chr(65 + colno) + "2:" + chr(65 + colno) + str(rowno) + ")",
+                    wbf['content_float_border_total'])
         rowno += 1
 
         # summary_by_salesperson = {}

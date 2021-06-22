@@ -21,8 +21,8 @@ class SaleOrder(models.Model):
                  ('account_id.user_type_id.name', 'in',
                   ['Receivable', 'Payable'])]
             )
-            confirm_sale_order = self.search([('partner_id', '=', partner.id),
-                                              ('state', '=', 'sale')])
+            # confirm_sale_order = self.search([('partner_id', '=', partner.id),
+            #                                   ('state', '=', 'sale')])
             debit, credit = 0.0, 0.0
             amount_total = 0.0
             if partner.block_nonpayment:
@@ -32,8 +32,9 @@ class SaleOrder(models.Model):
                 raise UserError(_('You can not confirm Sale '
                                   'Order. \n' + msg))
             else:
-                for status in confirm_sale_order:
+                for status in self:
                     amount_total += status.amount_total
+
                 for line in movelines:
                     credit += line.credit
                     debit += line.debit

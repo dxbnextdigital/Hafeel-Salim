@@ -53,7 +53,7 @@ class SalesMoveReport(models.TransientModel):
         wbf = {}
 
         comp = self.env.user.company_id.name
-        sheet = workbook.add_worksheet('Sales Info')
+        sheet = workbook.add_worksheet('Movement')
         format1 = workbook.add_format({'font_size': 14, 'align': 'vcenter', 'bold': True})
         format3 = workbook.add_format({'bottom': True, 'top': True, 'font_size': 12})
         red_mark = workbook.add_format({'font_size': 8, 'bg_color': 'red'})
@@ -328,11 +328,11 @@ class SalesMoveReport(models.TransientModel):
                 sheet.write(rowno - 1, colno, diclocsale['qty'], wbf['content_int_border'])
                 colno += 1
                 sheet.write(rowno - 1, colno, dic_prod['product_id'].standard_price * diclocsale['qty'],
-                            wbf['content_int_border'])
+                            wbf['content_float_border_total'])
                 colno += 1
-                sheet.write(rowno - 1, colno, diclocsale['price_total'], wbf['content_int_border'])
+                sheet.write(rowno - 1, colno, diclocsale['price_total'], wbf['content_float_border_total'])
                 colno += 1
-                sheet.write(rowno - 1, colno, diclocsale['margin'], wbf['content_int_border'])
+                sheet.write(rowno - 1, colno, diclocsale['margin'], wbf['content_float_border_total'])
             rowno += 1
 
         rowno -= 1
