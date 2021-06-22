@@ -209,6 +209,11 @@ class SalesMoveReport(models.TransientModel):
         colno += 1
         column_width = 20
         sheet.set_column(colno, colno, column_width)
+        sheet.write(rowno - 1, colno, 'Category', wbf['content_border_bg'])
+
+        colno += 1
+        column_width = 20
+        sheet.set_column(colno, colno, column_width)
         sheet.write(rowno-1, colno, 'Barcode', wbf['content_border_bg'])
 
         colno += 1
@@ -301,6 +306,9 @@ class SalesMoveReport(models.TransientModel):
             colno += 1
             sheet.write(rowno - 1, colno, dic_prod['product_id'].brand.name, wbf['content_border'])
             colno += 1
+            sheet.write(rowno - 1, colno, dic_prod['product_id'].categ_id.name, wbf['content_border'])
+
+            colno += 1
             barcode =''
             if dic_prod['product_id'].barcode:
                 barcode=dic_prod['product_id'].barcode
@@ -336,15 +344,19 @@ class SalesMoveReport(models.TransientModel):
             rowno += 1
 
         rowno -= 1
-        sheet.merge_range(rowno, 0, rowno, 6, "Total", wbf['content_border_bg'])
-        colno = 7
-        sheet.write(rowno, colno, "=sum(H2:H" + str(rowno) + ")", wbf['content_float_border_total'])
-        colno += 1
+        sheet.merge_range(rowno, 0, rowno, 7, "Total", wbf['content_border_bg'])
+        colno = 8
+
         sheet.write(rowno, colno, "=sum(I2:I" + str(rowno) + ")", wbf['content_float_border_total'])
         colno += 1
         sheet.write(rowno, colno, "=sum(J2:J" + str(rowno) + ")", wbf['content_float_border_total'])
         colno += 1
         sheet.write(rowno, colno, "=sum(K2:K" + str(rowno) + ")", wbf['content_float_border_total'])
+        colno += 1
+        sheet.write(rowno, colno, "=sum(L2:L" + str(rowno) + ")", wbf['content_float_border_total'])
+        colno += 1
+        sheet.write(rowno, colno, "=sum(M2:M" + str(rowno) + ")", wbf['content_float_border_total'])
+
         total_col = colno
         colno =  total_col
         for loid in objlocation:

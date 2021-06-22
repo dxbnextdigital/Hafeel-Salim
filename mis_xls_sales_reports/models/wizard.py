@@ -290,8 +290,8 @@ class SalesReport(models.TransientModel):
             totqty=0
 
             rowno+=1
-        sheet.merge_range(rowno, 0, rowno, 11, "Total", wbf['content_border_bg'])
-        colno = 11
+        sheet.merge_range(rowno, 0, rowno, 12, "Total", wbf['content_border_bg'])
+        colno = 12
         sheet.write(rowno, colno, "=sum(" + chr(65+colno) +"2:" + chr(65+colno) +str(rowno)+")", wbf['content_int_border_total'])
         colno += 1
         sheet.write(rowno, colno, "=sum(" + chr(65+colno) +"2:" + chr(65+colno) + str(rowno) + ")", wbf['content_float_border_total'])
