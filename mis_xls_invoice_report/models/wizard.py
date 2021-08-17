@@ -14,28 +14,19 @@ from odoo.exceptions import UserError
 class InvoiceReport(models.TransientModel):
     _name = "wizard.invoice.history"
     _description = "Current Invoice History"
-
     #start_date = fields.Date(string='Start Date', required="1")
     end_date = fields.Date(string="End Date", default=fields.Date.to_string(date.today()), required="1")
-
-
     datas = fields.Binary('File', readonly=True)
     datas_fname = fields.Char('Filename', readonly=True)
 
-
     def export_xls(self):
-
-
         objinvoice = self.env['account.move'].search([('invoice_date', '<=', self.end_date), ('state', '=', 'posted'),
-                                                    ('move_type', '=', 'out_invoice'), ('amount_residual_signed', '>', 0.0)])
-
-
-
+                                                    ('move_type', 'in', ('out_invoice','out_refund')),
+                                                      ('company_id','=', self.env.company.id), ('amount_residual_signed', '>', 0.0)])
         date = datetime.now()
         report_name = 'invoice_' + date.strftime("%y%m%d%H%M%S")
         date_string = date.strftime("%B-%y")
         filename = '%s %s' % (report_name, date_string)
-
 
         fp = io.BytesIO()
         workbook = xlsxwriter.Workbook(fp)
@@ -58,7 +49,6 @@ class InvoiceReport(models.TransientModel):
         justify.set_align('justify')
         format1.set_align('center')
         red_mark.set_align('center')
-
 
         wbf['content_border'] = workbook.add_format()
         wbf['content_border'].set_top()
@@ -87,7 +77,6 @@ class InvoiceReport(models.TransientModel):
         wbf['content_float_border'].set_bottom()
         wbf['content_float_border'].set_left()
         wbf['content_float_border'].set_right()
-
         wbf['content_int_border'] = workbook.add_format({'align': 'right', 'num_format': '#,##0'})
         wbf['content_int_border'].set_top()
         wbf['content_int_border'].set_bottom()
