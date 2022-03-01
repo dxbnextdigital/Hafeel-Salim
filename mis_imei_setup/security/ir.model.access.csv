@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_imei_capture_wiz,access.imei.capture.wiz,model_imei_capture_wiz,base.group_user,1,1,1,1
+access_imei_capture_wiz_line,access.imei.capture.wiz.line,model_imei_capture_wiz_line,base.group_user,1,1,1,1
+access_imei_return_wiz,access.imei.return.wiz,model_imei_return_wiz,base.group_user,1,1,1,1
+access_imei_return_wiz_line,access.imei.return.wiz.line,model_imei_return_wiz_line,base.group_user,1,1,1,1
+access_product_imei,access.product.imei,model_product_imei,base.group_user,1,1,1,1
+
+
