@@ -11,6 +11,7 @@
         ],
     'data': [
         'views/partner_view.xml',
+        'data/ir_cron.xml',
     ],
     'installable': True,
     'auto_install': False,
