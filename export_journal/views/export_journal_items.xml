@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="export_journal_items_form_view" model="ir.ui.view">
+            <field name="name">export_journal.export_journal_items.form</field>
+            <field name="model">export.journal.item</field>
+            <field name="arch" type="xml">
+                <form>
+
+                    <sheet>
+                        <group string="Transfer from One Account to Another Using Sql">
+                            <group >
+                            <field name="from_journal"></field>
+
+                            </group>
+                            <group>
+                                <field name="journal_id"></field>
+
+                            </group>
+                        <button name="xlsx_export_journal" string="Update" type="object" class="btn-secondary"/>
+
+                        </group>
+
+                           <group string="Change Account Type">
+                            <group >
+                            <field name="change_account_id"></field>
+
+                            </group>
+                            <group>
+                                <field name="change_account_type"></field>
+
+                            </group>
+                        <button name="change_account_type_fun" string="Update" type="object" class="btn-secondary"/>
+
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="export_journal_items_tree_view" model="ir.ui.view">
+            <field name="name">export_journal.export_journal_items.tree</field>
+            <field name="model">export.journal.item</field>
+            <field name="arch" type="xml">
+                <tree>
+
+                        <field name="journal_id"></field>
+
+
+                </tree>
+            </field>
+        </record>
+
+
+
+        <record id="export_journal_items_act_window" model="ir.actions.act_window">
+            <field name="name">Journal Export</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">export.journal.item</field>
+<!--            <field name="view_type">form</field>-->
+            <field name="view_mode">form,tree</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    There is no examples click here to add new ModelTitle.
+                </p>
+            </field>
+        </record>
+
+        <menuitem name="Journal" id="export_journal_items_menu" action="export_journal_items_act_window"/>
+
+    </data>
+</odoo>
