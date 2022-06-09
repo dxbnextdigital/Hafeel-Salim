@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="edit_sale_order_name_form_view" model="ir.ui.view">
+            <field name="name">edit.sale.order.name.form</field>
+            <field name="model">edit.sale.order.name</field>
+            <field name="arch" type="xml">
+                <form string="ModelTitle">
+                    <sheet>
+                        <field name="name"></field>
+                        <field name="sale_order" readonly="1"></field>
+                        <button name="action_update" type="object" string="update"/>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="edit_invoice_name_form_view" model="ir.ui.view">
+            <field name="name">edit.invoice.name.form</field>
+            <field name="model">edit.invoice.name</field>
+            <field name="arch" type="xml">
+                <form string="ModelTitle">
+                    <sheet>
+                        <field name="name"></field>
+                        <field name="invoice_id" readonly="1"></field>
+                        <button name="action_update" type="object" string="update"/>
+
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+
+
+
+    </data>
+</odoo>
