@@ -7,7 +7,7 @@ from datetime import datetime
 
 class AccountInvoice(models.Model):
     _inherit = "account.move"
-    last_paid_date = fields.Date(compute='_compute_last_paid' ,string='Paid Date',store=True)
+    last_paid_date = fields.Date(compute='_compute_last_paid' ,string='Paid Date')
     paid_amount = fields.Float(compute ='_compute_paid_amount',string="Payment Amount")
 
     @api.depends('amount_total_signed','amount_residual')
@@ -15,7 +15,7 @@ class AccountInvoice(models.Model):
         for rec in self:
             rec.paid_amount = rec.amount_total_signed - rec.amount_residual
 
-
+    @api.depends('invoice_payments_widget')
     def _compute_last_paid(self):
         for rec in self:
             payments = json.loads(rec.invoice_payments_widget)
