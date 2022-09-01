@@ -31,6 +31,7 @@ class HideMenuUser(models.Model):
         """
         Else the menu will be still hidden even after removing from the list
         """
+        print("create",vals)
         self.clear_caches()
         return super(HideMenuUser, self).create(vals)
 
@@ -38,12 +39,16 @@ class HideMenuUser(models.Model):
         """
         Else the menu will be still hidden even after removing from the list
         """
+
+        print( 'def write(self, vals):')
         res = super(HideMenuUser, self).write(vals)
-        for menu in self.hide_menu_ids:
-            menu.write({
-                'restrict_user_ids': [(4, self.id)]
-            })
-        self.clear_caches()
+        print('res',self)
+        for rec in self:
+            for menu in rec.hide_menu_ids:
+                menu.write({
+                    'restrict_user_ids': [(4, rec.id)]
+                })
+            rec.clear_caches()
         return res
 
     def _get_is_admin(self):
@@ -51,6 +56,7 @@ class HideMenuUser(models.Model):
         The Hide specific menu tab will be hidden for the Admin user form.
         Else once the menu is hidden, it will be difficult to re-enable it.
         """
+        print("_get_is_admin(self)")
         for rec in self:
             rec.is_admin = False
             if rec.id == self.env.ref('base.user_admin').id:
