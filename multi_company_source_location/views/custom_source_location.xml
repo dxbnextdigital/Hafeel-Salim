@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+<record id="view_custom_source_location_form_inherit_ref_change" model="ir.ui.view">
+        <field name="name">custom.source.location.inherit.ref.change</field>
+        <field name="model">custom.source.location</field>
+        <field name="inherit_id" ref="sales_source_location.custom_source_location_form_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='stock_location_id']" position="after">
+<field name="company_id"></field>
+                          </xpath>
+        </field>
+</record>
+
+
+
+         <record id="custom_source_location_rule" model="ir.rule">
+        <field name="name">Custom Source Location multi-company</field>
+        <field name="model_id" ref="model_custom_source_location"/>
+        <field name="domain_force">['|',('company_id','=',False),('company_id', 'in', company_ids)]</field>
+    </record>
+
+
+
+    </data>
+</odoo>
