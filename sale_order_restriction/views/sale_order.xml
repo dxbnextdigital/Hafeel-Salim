@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+      <record id="action_restriction_quotations_with_onboarding" model="ir.actions.act_window">
+            <field name="name">Quotations Test</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_id" ref="sale.view_quotation_tree_with_onboarding"/>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+            <field name="search_view_id" ref="sale.sale_order_view_search_inherit_quotation"/>
+            <field name="context">{'search_default_my_quotation': 1}</field>
+            <field name="domain">['|',('team_id.member_ids','in',uid),('team_id.user_id','=',uid)]</field>
+
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create a new quotation, the first step of a new sale!
+              </p><p>
+                Once the quotation is confirmed by the customer, it becomes a sales order.<br/> You will be able to create an invoice and collect the payment.
+              </p>
+            </field>
+        </record>
+
+
+
+          <record id="action_restrict_orders" model="ir.actions.act_window">
+            <field name="name">Sales Orders Test</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+            <field name="search_view_id" ref="sale.sale_order_view_search_inherit_sale"/>
+            <field name="context">{}</field>
+            <field name="domain">[('state', 'not in', ('draft', 'sent', 'cancel')),'|',('team_id.member_ids','in',uid),('team_id.user_id','=',uid)]</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new quotation, the first step of a new sale!
+                </p><p>
+                    Once the quotation is confirmed, it becomes a sales order.<br/> You will be able to create an invoice and collect the payment.
+                </p>
+            </field>
+        </record>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <menuitem
+        id="restricted_quotation_record"
+        name="Quotations"
+        parent="sale.sale_order_menu"
+        groups ="group_sale_base_on_salesteam_visible"
+        action="action_restriction_quotations_with_onboarding"
+        sequence="2"
+        />
+
+
+    <menuitem
+        id="restricted_sales_record"
+        name="Orders"
+        parent="sale.sale_order_menu"
+        groups ="group_sale_base_on_salesteam_visible"
+        action="action_restrict_orders"
+        sequence="2"
+        />
+
+
+
+
+  <record id="sale.menu_sale_quotations" model="ir.ui.menu">
+              <field name="groups_id" eval="[(6,0,[ref('sale_order_restriction.group_sale_administrator_visible')])]"/>
+
+        </record>
+
+  <record id="sale.menu_sale_order" model="ir.ui.menu">
+              <field name="groups_id" eval="[(6,0,[ ref('sale_order_restriction.group_sale_administrator_visible')])]"/>
+
+        </record>
+
+<!--  <record id="sale.menu_sale_order" model="ir.ui.menu">-->
+<!--&lt;!&ndash;            <field name="groups_id" ref="invoice_restriction.group_invoice_administrator_visible"/>&ndash;&gt;-->
+<!--              <field name="groups" ref="[(4, ref('sale_order_restriction.group_sale_administrator_visible'))]"/>-->
+
+<!--        </record>-->
+
+
+    </data>
+</odoo>
+
+
+
+
+
+
