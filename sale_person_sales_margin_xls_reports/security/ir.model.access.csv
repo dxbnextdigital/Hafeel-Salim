@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_wizard_inv_product_history_sale_team,wizard_inv_product_history_sale_team,model_wizard_inv_product_history_sale_team,,1,1,1,1
+
