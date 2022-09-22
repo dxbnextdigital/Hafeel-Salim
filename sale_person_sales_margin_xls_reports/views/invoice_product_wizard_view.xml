@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <record model='ir.ui.view' id='wizard_inv_product_history_form'>
+            <field name="name">wizard.inv.product.history.form</field>
+            <field name="model">wizard.inv.product.history.sale.team</field>
+            <field name="arch" type="xml">
+                <form string="Wizard">
+                        <group string="Date">
+                            <group>
+                                <field name="start_date"/>
+                            </group>
+                            <group>
+                                <field name="end_date"/>
+                            </group>
+
+                        </group>
+                    <group string="Sales Team">
+                    <field name="sale_team"></field>
+                    </group>
+                    <footer>
+                        <button name="export_xls" type="object" default_focus="1"
+                                string="Download Xls Report" class="oe_highlight"
+                                context="{'xls_export':1}" icon="fa-download"/>
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record model='ir.actions.act_window' id='wizard_sales_team_inv_product_history_act'>
+            <field name="name">Download Xls Report</field>
+            <field name="res_model">wizard.inv.product.history.sale.team</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="wizard_inv_product_history_form"/>
+            <field name="target">new</field>
+        </record>
+
+
+
+     <menuitem name="Report"
+                   parent="account_accountant.menu_accounting"
+                  id="custom_report_for_sales_team"
+                  action="account.open_account_journal_dashboard_kanban"
+                  sequence="70"
+                groups ='sale_person_sales_margin_xls_reports.visible_to_team_lead_sales_margin'
+
+                  />
+
+        <menuitem name="Sales Team Based Sales Margin"
+                  parent="custom_report_for_sales_team"
+                  id="new_text"
+                  action="wizard_sales_team_inv_product_history_act"
+                  sequence="70"
+
+                  />
+
+<!--                  <record id="mis_xls_invoice_report.export_inv_prdouct_history_excel" model="ir.ui.menu">-->
+<!--              <field name="groups_id" eval="[(6,0,[ ref('sale_person_sales_margin_xls_reports.visible_to_all__sales_margin')])]"/>-->
+
+<!--        </record>-->
+    </data>
+
+</odoo>

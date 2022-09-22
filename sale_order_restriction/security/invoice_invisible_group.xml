@@ -15,6 +15,8 @@
 </record>
 
 
+
+
         <record id="group_sale_base_on_salesteam_visible" model="res.groups">
         <field name="name"> Sales Teams </field>
 

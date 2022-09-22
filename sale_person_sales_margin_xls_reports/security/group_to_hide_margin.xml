@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+       <record model="res.groups" id="visible_to_team_lead_sales_margin">
+           <field name="name"> Enable Visibility of Team Leader Sales Margin based on Sales Team</field>
+        </record>
+<!--       <record model="res.groups" id="visible_to_all__sales_margin">-->
+<!--           <field name="name"> Hide Overall Sales Margin</field>-->
+<!--        </record>-->
+
+    </data>
+</odoo>
