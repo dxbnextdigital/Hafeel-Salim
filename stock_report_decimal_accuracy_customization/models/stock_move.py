@@ -19,3 +19,9 @@ class StockQuant(models.Model):
         digits='Custom Report Inventory'
 
     )
+# class StockMoveLine(models.Model):
+#     _inherit = 'stock.move.line'
+#
+#     loc_stock = fields.Float('AVL QTY', compute='_avlqty',         digits='Custom Report Inventory'
+#     , store=True)
+

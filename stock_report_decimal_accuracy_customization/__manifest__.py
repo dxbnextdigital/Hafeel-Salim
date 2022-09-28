@@ -6,7 +6,7 @@
 
     'category': 'Stock',
     "version": "14.0.1.0.1",
-    'depends': ['stock'],
+    'depends': ['stock','sales_source_location'],
     'images': [],
     'data': ['data/decimal_precision.xml'
 

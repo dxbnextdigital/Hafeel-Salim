@@ -11,3 +11,9 @@ class StockValuationLayer(models.Model):
     _inherit ='stock.valuation.layer'
     quantity = fields.Float('Quantity', digits='Custom Report Inventory', help='Quantity', readonly=True)
     remaining_qty = fields.Float(digits='Custom Report Inventory', readonly=True)
+
+
+class StockMoveLineCustom(models.Model):
+    _inherit = 'stock.move.line'
+
+    loc_stock = fields.Float('AVL QTY', compute='_avlqty',digits='Custom Report Inventory', store=True)
