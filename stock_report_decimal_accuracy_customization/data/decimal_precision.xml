@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record forcecreate="True" id="decimal_custom_report" model="decimal.precision">
+            <field name="name">Custom Report Inventory</field>
+            <field name="digits" eval="0"/>
+        </record>
+
+    </data>
+</odoo>
