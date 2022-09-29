@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+    <template id="total_report_delivery" inherit_id="stock.report_delivery_document">
+
+
+
+
+
+
+
+       <xpath expr="//table[@name='stock_move_table']/tbody[last()]" position="after">
+          <t t-if="o.state!='done'">
+<td>
+
+</td>
+              <td>
+                                  <t t-esc="o.total_qty"></t>
+
+              </td>
+
+
+
+
+          </t>
+        </xpath>
+
+
+
+
+
+
+        <xpath expr="//table[@name='stock_move_line_table']/tbody[last()]" position="after">
+        <t   t-if="o.move_line_ids and o.state=='done'">
+
+
+<td>
+
+</td>
+              <td>
+                                  <t t-esc="o.total_qty"></t>
+
+              </td>
+
+
+
+
+        </t>
+        </xpath>
+
+    </template>
+
+
+    </data>
+</odoo>
