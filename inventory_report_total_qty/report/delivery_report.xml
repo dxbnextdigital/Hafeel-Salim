@@ -14,8 +14,10 @@
           <t t-if="o.state!='done'">
 
               <td>
-                                  <t t-esc="o.total_qty"></t>
-
+                  <span class="text-center">
+                  
+                  Total Quantity   :      <t t-esc="o.total_qty"></t>
+                  </span>
               </td>
 
 
@@ -35,8 +37,10 @@
 
 
               <td>
-                                  <t t-esc="o.total_qty"></t>
-
+ <span class="text-center">
+                  
+                  Total Quantity   :      <t t-esc="o.total_qty"></t>
+                  </span>
               </td>
 
 
