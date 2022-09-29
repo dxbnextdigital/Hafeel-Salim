@@ -12,9 +12,7 @@
 
        <xpath expr="//table[@name='stock_move_table']/tbody[last()]" position="after">
           <t t-if="o.state!='done'">
-<td>
 
-</td>
               <td>
                                   <t t-esc="o.total_qty"></t>
 
@@ -35,9 +33,7 @@
         <t   t-if="o.move_line_ids and o.state=='done'">
 
 
-<td>
 
-</td>
               <td>
                                   <t t-esc="o.total_qty"></t>
 
