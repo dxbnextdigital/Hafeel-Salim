@@ -12,11 +12,17 @@
 
        <xpath expr="//table[@name='stock_move_table']/tbody[last()]" position="after">
           <t t-if="o.state!='done'">
+              <tr>
+                <td colspan="10">
+                    <p class="text-center">
 
-              <td>
-                                  <t t-esc="o.total_qty"></t>
+                        <span>  Total Quantity : <t t-esc="o.total_qty_list"></t> PCS </span> </p>
+                </td>
 
-              </td>
+
+
+            </tr>
+
 
 
 
@@ -31,13 +37,17 @@
 
         <xpath expr="//table[@name='stock_move_line_table']/tbody[last()]" position="after">
         <t   t-if="o.move_line_ids and o.state=='done'">
+            <tr>
+                <td colspan="10">
+                    <p class="text-center">
+
+                        <span>  Total Quantity : <t t-esc="o.total_qty"></t> PCS </span> </p>
+                </td>
 
 
 
-              <td>
-                                  <t t-esc="o.total_qty"></t>
+            </tr>
 
-              </td>
 
 
 
