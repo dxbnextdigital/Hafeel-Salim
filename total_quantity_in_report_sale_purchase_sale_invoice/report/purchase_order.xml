@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+
+    <template id="report_purchaseorder_document" inherit_id="purchase.report_purchaseorder_document">
+        <xpath expr="//t[@t-foreach='o.order_line']" position="after">
+
+
+              <tr class="bg-light">
+ <td colspan="8" style="text-align: center;">
+
+<!--              <span class="mx-auto">-->
+
+
+<!--      </span>-->
+         <span > Total Quantity : <t t-esc="o.total_qty"/>  PCS </span>
+
+
+
+
+
+</td>
+
+            </tr>
+
+        </xpath>
+    </template>
+
+
+
+
+
+
+    <template id="report_purchasequotation_document_add_total_quant" inherit_id="purchase.report_purchasequotation_document">
+        <xpath expr="//t[@t-foreach='o.order_line']" position="after">
+             <tr class="bg-light">
+ <td colspan="8" style="text-align: center;">
+
+<!--              <span class="mx-auto">-->
+
+
+<!--      </span>-->
+         <span > Total Quantity : <t t-esc="o.total_qty"/>  PCS </span>
+
+
+
+
+
+</td>
+
+            </tr>
+
+        </xpath>
+    </template>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </data>
+</odoo>
