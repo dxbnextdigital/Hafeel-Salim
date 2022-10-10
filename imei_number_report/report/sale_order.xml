@@ -1,0 +1,54 @@
+<odoo>
+    <template id="sale_report_inherit" inherit_id="sale.report_saleorder_document">
+        <xpath expr="//div[@name='so_total_summary']" position="after">
+            <div id="imei_details" style="page-break-before: always;">
+                <t t-if="doc.imei_numbers_id">
+                    <strong>IMEI List:</strong>
+                    <t t-set="count" t-value="0"></t>
+
+                    <t t-set="record_collection" t-value="doc.get_details_imei()"/>
+
+                    <t t-foreach="record_collection" t-as="o">
+
+                        <t t-set="col_count" t-value="0"/>
+
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th colspan="3"
+                                        style="border: 1px solid black; border-collapse: collapse;text-align:center;">
+                                        <span t-esc="o[0]"/>
+                                    </th>
+                                    <!--       <th scope="col">First</th> -->
+                                    <!--       <th scope="col">Last</th> -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="o[1]" t-as="rc">
+                                    <t t-if="col_count%3 == 0">
+                                        <t t-set="col_count" t-value="col_count+1"/>
+                                        <!-- 										<span t-esc="col_count"></span> -->
+                                        <td t-esc="rc"/>
+                                    </t>
+                                    <!-- 			<tr> -->
+                                    <t t-else="col_count%3 == 0">
+                                               <td t-esc="rc"/>
+                                        <t t-set="col_count" t-value="0"/>
+                                        <tr/>
+
+
+                                    </t>
+                                    <!-- </tr> -->
+                                </t>
+                            </tbody>
+                        </table>
+
+
+                    </t>
+                </t>
+            </div>
+        </xpath>
+    </template>
+
+
+</odoo>

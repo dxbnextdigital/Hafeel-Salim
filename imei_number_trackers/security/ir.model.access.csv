@@ -1,0 +1,5 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"access_imei_number","access_imei_number","model_imei_number",,1,1,1,1
+"access_imei_number_return","access_imei_number_return","model_imei_number_return",,1,1,1,1
+"access_imei_xls_import","access_imei_xls_import","model_imei_xls_import",,1,1,1,1
+"access_xlsx_imei_return","access_xlsx_imei_return","model_xlsx_imei_return",,1,1,1,1

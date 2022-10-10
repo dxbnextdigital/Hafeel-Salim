@@ -1,0 +1,173 @@
+import io
+import xlrd
+import babel
+import logging
+import tempfile
+import binascii
+from io import StringIO
+from datetime import date, datetime, time
+from odoo import api, fields, models, tools, _
+from odoo.exceptions import Warning, UserError, ValidationError
+_logger = logging.getLogger(__name__)
+
+import  json
+try:
+	import csv
+except ImportError:
+	_logger.debug('Cannot `import csv`.')
+try:
+	import xlwt
+except ImportError:
+	_logger.debug('Cannot `import xlwt`.')
+try:
+	import cStringIO
+except ImportError:
+	_logger.debug('Cannot `import cStringIO`.')
+try:
+	import base64
+except ImportError:
+	_logger.debug('Cannot `import base64`.')
+try:
+    from odoo.tools.misc import xlsxwriter
+except ImportError:
+    import xlsxwriter
+from odoo.tools import date_utils
+
+
+class ImportEmployee(models.TransientModel):
+	_name = 'xlsx.imei.return'
+	_description = 'Import IMEI'
+	picking_id = fields.Many2one('stock.picking')
+	file_type = fields.Selection([('CSV', 'CSV File'),('XLS', 'XLS File')],string='File Type', default='XLS')
+	file = fields.Binary(string="Upload File")
+
+
+	def export_export_product(self):
+		data = {
+			'ids': self.id,
+			'model': self._name,
+			'picking_id': self.picking_id.id
+
+		}
+		return {
+			'type': 'ir.actions.report',
+			'data': {'model': 'xlsx.imei.return',
+					 'options': json.dumps(data, default=date_utils.json_default),
+					 'output_format': 'xlsx',
+					 'report_name': self.picking_id.name+"_IMEI_RETURN_EXPORT"
+					 },
+			'report_type': 'xlsx'
+		}
+
+	def get_product(self, name):
+		product = self.env['product.product'].search([('name', '=', name)],limit=1)
+		if product:
+			return product
+		else:
+			raise UserError(_('"%s" Product is not found in system !') % name)
+
+
+	def create_employee(self, values):
+
+		imei_number = self.env['imei.number.return']
+		product_id = self.get_product(values.get('Product'))
+
+		vals = {
+			'product_id': product_id.id,
+			'name': values.get('IMEI'),
+			'picking_id': self.picking_id.id
+
+		}
+
+		if values.get('name') == '':
+			raise UserError(_('IMEI Name is Required !'))
+		if values.get('product_id') == '':
+			raise UserError(_('Product Field can not be Empty !'))
+
+		res = imei_number.create(vals)
+		return res
+
+	def import_imei_numbers(self):
+		if not self.file:
+			raise ValidationError(_("Please Upload File to Import IMEI !"))
+
+		if self.file_type == 'CSV':
+			line = keys = ['Product', 'IMEI']
+			try:
+				csv_data = base64.b64decode(self.file)
+				data_file = io.StringIO(csv_data.decode("utf-8"))
+				data_file.seek(0)
+				file_reader = []
+				csv_reader = csv.reader(data_file, delimiter=',')
+				file_reader.extend(csv_reader)
+			except Exception:
+				raise ValidationError(_("Please Select Valid File Format !"))
+
+			values = {}
+			for i in range(len(file_reader)):
+				field = list(map(str, file_reader[i]))
+				values = dict(zip(keys, field))
+				if values:
+					if i == 0:
+						continue
+					else:
+						res = self.create_employee(values)
+		else:
+			try:
+				file = tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx")
+				file.write(binascii.a2b_base64(self.file))
+				file.seek(0)
+				values = {}
+				workbook = xlrd.open_workbook(file.name)
+				sheet = workbook.sheet_by_index(0)
+			except Exception:
+				raise ValidationError(_("Please Select Valid File Format !"))
+			stock_picking_list  =[]
+			for row_no in range(sheet.nrows):
+				val = {}
+				if row_no <= 0:
+					fields = list(map(lambda row: row.value.encode('utf-8'), sheet.row(row_no)))
+				else:
+					line = list(
+						map(lambda row: isinstance(row.value, bytes) and row.value.encode('utf-8') or str(row.value),
+							sheet.row(row_no)))
+					values.update({
+						'Product': line[0],
+						'IMEI': line[1],
+
+					})
+					stock_picking_list.append(values)
+		self.picking_id.pre_xls_entry_before(stock_picking_list)
+		res = self.create_employee(values)
+
+	def get_xlsx_report(self, data, response):
+
+		print('data',data)
+		print('response',response)
+		output = io.BytesIO()
+		workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+		worksheet = workbook.add_worksheet()
+
+		my_dict = {'Product': [],
+				   'IMEI': [],
+				 }
+		print(self.env['stock.move.line'].search([('picking_id','=',data['picking_id'])]).read())
+
+		col_num = 0
+		for rec in self.env['stock.move.line'].search([('picking_id','=',data['picking_id']),('product_id.is_imei_required','=',True)]):
+			for qty in range(int(rec.product_uom_qty)):
+				my_dict['Product'].append(rec.product_id.name)
+				my_dict['IMEI'].append('')
+		print(my_dict)
+		for key, value in my_dict.items():
+			worksheet.write(0, col_num, key)
+			worksheet.write_column(1, col_num, value)
+			col_num += 1
+
+		workbook.close()
+		output.seek(0)
+		response.stream.write(output.read())
+		output.close()
+
+
+
