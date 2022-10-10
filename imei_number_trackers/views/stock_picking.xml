@@ -32,7 +32,6 @@
 
 
                            <button name="action_import_imei_numbers" string="Import IMEI " attrs="{'invisible': [('is_imei_visible','!=',True)]}" type="object"></button>
-            <field name="is_imei_visible" invisible="1"></field>
 
                 </xpath>
 

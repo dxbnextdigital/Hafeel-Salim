@@ -28,6 +28,7 @@ class ImeiNumbers(models.Model):
 
     @api.depends('sale_order')
     def _compute_invoice(self):
+        self.account_move_id =False
         for rec in self.sale_order.invoice_ids:
             self.account_move_id = rec.id
             break

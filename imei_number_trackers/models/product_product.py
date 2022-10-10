@@ -114,3 +114,5 @@ class SaleOrder(models.Model):
         if self.check_weather_is_imei_required():
             self.check_imei_number_correct()
         return super(SaleOrder, self).action_confirm_deliver()
+
+
