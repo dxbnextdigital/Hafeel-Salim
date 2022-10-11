@@ -43,6 +43,7 @@ class ImportEmployee(models.TransientModel):
 
 
 	def export_export_product(self):
+		print("export_export_product")
 		data = {
 			'ids': self.id,
 			'model': self._name,
@@ -60,6 +61,7 @@ class ImportEmployee(models.TransientModel):
 		}
 
 	def get_product(self, name):
+		print("get_product")
 		product = self.env['product.product'].search([('name', '=', name)],limit=1)
 		if product:
 			return product
@@ -67,14 +69,22 @@ class ImportEmployee(models.TransientModel):
 			raise UserError(_('"%s" Product is not found in system !') % name)
 
 
+
+	def remove_decimal(self,value):
+		if '.' in value:
+			value = value.split(".")[0]
+		return value
+
+
 	def create_employee(self, values):
+		print("create_employee")
 
 		imei_number = self.env['imei.number.return']
 		product_id = self.get_product(values.get('Product'))
 
 		vals = {
 			'product_id': product_id.id,
-			'name': values.get('IMEI'),
+			'name': self.remove_decimal(values.get('IMEI')),
 			'picking_id': self.picking_id.id
 
 		}
@@ -83,11 +93,13 @@ class ImportEmployee(models.TransientModel):
 			raise UserError(_('IMEI Name is Required !'))
 		if values.get('product_id') == '':
 			raise UserError(_('Product Field can not be Empty !'))
+		print("vals",type(values.get('IMEI')))
 
 		res = imei_number.create(vals)
 		return res
 
 	def import_imei_numbers(self):
+
 		if not self.file:
 			raise ValidationError(_("Please Upload File to Import IMEI !"))
 
@@ -137,10 +149,12 @@ class ImportEmployee(models.TransientModel):
 
 					})
 					stock_picking_list.append(values)
+		print(values)
 		self.picking_id.pre_xls_entry_before(stock_picking_list)
 		res = self.create_employee(values)
 
 	def get_xlsx_report(self, data, response):
+
 
 		print('data',data)
 		print('response',response)
@@ -157,7 +171,7 @@ class ImportEmployee(models.TransientModel):
 		for rec in self.env['stock.move.line'].search([('picking_id','=',data['picking_id']),('product_id.is_imei_required','=',True)]):
 			for qty in range(int(rec.product_uom_qty)):
 				my_dict['Product'].append(rec.product_id.name)
-				my_dict['IMEI'].append('')
+				my_dict['IMEI'].append(0)
 		print(my_dict)
 		for key, value in my_dict.items():
 			worksheet.write(0, col_num, key)

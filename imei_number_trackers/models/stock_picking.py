@@ -59,7 +59,7 @@ class StockPicking(models.Model):
                     raise UserError(_('Please enter IMEI Number'))
 
                 else:
-                    if order_product[rec.product_id.id] == imei_product[rec.product_id.id]:
+                    if order_product == imei_product:
                             return ;
                     else:
                         raise UserError(_('Please check exceed limit  IMEI Number of Product '+rec.product_id.name))
@@ -78,14 +78,15 @@ class StockPicking(models.Model):
             imei_product[rec.product_id.id] =  0.0
         for rec in self.imei_numbers_id:
             imei_product[rec.product_id.id] =  imei_product[rec.product_id.id]+1
+        print(imei_product)
+        print(order_product)
         for rec in self.move_ids_without_package.filtered(lambda  p : p.product_id.product_tmpl_id.is_imei_required == True):
             if imei_product == {}:
                 raise UserError(_('Please enter IMEI Number'))
-
-                if  imei_product[rec.product_id.id] ==   order_product[rec.product_id.id] :
-                    pass
-                else:
-                    raise UserError(_('Please enter IMEI Number of Product '+rec.product_id.name))
+            if  imei_product ==   order_product:
+                return;
+            else:
+                raise UserError(_('Please enter IMEI Number of Product '+rec.product_id.name))
 
 
 
@@ -105,8 +106,12 @@ class StockPicking(models.Model):
 
         for rec in self.imei_numbers_id:
             imei = self.env['imei.number'].search([('name','=',rec.name),('product_id','=',rec.product_id.id)])
+            if imei:
+                imei.unlink()
+            else:
+                raise UserError(_(rec.name+' does not exist for Product '+rec.product_id.name))
 
-            imei.unlink()
+
 
 
 

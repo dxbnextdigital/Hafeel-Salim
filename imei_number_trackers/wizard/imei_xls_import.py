@@ -66,15 +66,19 @@ class ImportEmployee(models.TransientModel):
 		else:
 			raise UserError(_('"%s" Product is not found in system !') % name)
 
+	def remove_decimal(self,value):
+		if '.' in value:
+			value = value.split(".")[0]
+		return value
 
 	def create_employee(self, values):
-
+		print('create_employee')
 		imei_number = self.env['imei.number']
 		product_id = self.get_product(values.get('Product'))
-
+		print("yes")
 		vals = {
 			'product_id': product_id.id,
-			'name': values.get('IMEI'),
+			'name': self.remove_decimal(values.get('IMEI')),
 			'sale_order': self.sale_order_id.id
 
 		}
