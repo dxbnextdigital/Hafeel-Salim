@@ -76,6 +76,7 @@ class ImportEmployee(models.TransientModel):
 		imei_number = self.env['imei.number']
 		product_id = self.get_product(values.get('Product'))
 		print("yes")
+		print(self.remove_decimal(values.get('IMEI')))
 		vals = {
 			'product_id': product_id.id,
 			'name': self.remove_decimal(values.get('IMEI')),
@@ -89,7 +90,7 @@ class ImportEmployee(models.TransientModel):
 			raise UserError(_('Product Field can not be Empty !'))
 
 		res = imei_number.create(vals)
-		return res
+		return ;
 
 	def import_imei_numbers(self):
 		if not self.file:
@@ -115,6 +116,7 @@ class ImportEmployee(models.TransientModel):
 					if i == 0:
 						continue
 					else:
+
 						res = self.create_employee(values)
 		else:
 			try:
@@ -129,21 +131,22 @@ class ImportEmployee(models.TransientModel):
 			sale_list = []
 			for row_no in range(sheet.nrows):
 				val = {}
+				print(row_no)
 				if row_no <= 0:
 					fields = list(map(lambda row: row.value.encode('utf-8'), sheet.row(row_no)))
 				else:
 					line = list(
 						map(lambda row: isinstance(row.value, bytes) and row.value.encode('utf-8') or str(row.value),
 							sheet.row(row_no)))
-					values.update({
-						'Product': line[0],
-						'IMEI': line[1],
-
-					})
+					values = {'Product': line[0], 'IMEI': line[1]}
 					sale_list.append(values)
-			self.sale_order_id.pre_xls_entry_before(sale_list)
 
+
+			# print(sale_list)
+			self.sale_order_id.pre_xls_entry_before(sale_list)
+			#
 			for rec in sale_list:
+			# 	print(rec)
 				res = self.create_employee(rec)
 
 	def get_xlsx_report(self, data, response):

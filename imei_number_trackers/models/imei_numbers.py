@@ -15,7 +15,7 @@ class ImeiNumbers(models.Model):
     partner_id = fields.Many2one('res.partner',related='sale_order.partner_id',store=True)
 
     # invoice_id = fields.Many2one('account.move', string='Invoice No')
-    invoice_date = fields.Date(string='Invoice Date',related='account_move_id.invoice_date')
+    invoice_date = fields.Date(string='Invoice Date')
     product_barcode = fields.Char(string='Product Barcode' , related='product_id.barcode',store=True)
     # product_id = fields.Many2one('product.product', string='Product')
     product_brand = fields.Many2one('mis.product.brand', related='product_id.brand', string='Product Brand',store=True)
@@ -31,6 +31,7 @@ class ImeiNumbers(models.Model):
         self.account_move_id = False
         for rec in self.sale_order.invoice_ids:
             self.account_move_id = rec.id
+            self.invoice_date = rec.invoice_date
             break
     @api.constrains('name')
     def _check_date_end(self):

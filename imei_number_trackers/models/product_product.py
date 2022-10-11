@@ -82,15 +82,9 @@ class SaleOrder(models.Model):
                 imei_product[rec.product_id.id] = imei_product[rec.product_id.id]+1
             for rec in self.order_line:
                 if  imei_product == {}:
-                    print(order_product)
-                    print(imei_product)
-
                     raise UserError(_('Please enter IMEI Number'))
-
                 else:
                     if order_product == imei_product:
-                        print(order_product)
-                        print(imei_product)
                         return ;
                     else:
                         raise UserError(_('Please check IMEI Number of Product '+rec.product_id.name))
@@ -118,6 +112,7 @@ class SaleOrder(models.Model):
     def action_confirm_deliver(self):
         if self.check_weather_is_imei_required():
             self.check_imei_number_correct()
+
         return super(SaleOrder, self).action_confirm_deliver()
 
 

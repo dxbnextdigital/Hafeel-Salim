@@ -28,6 +28,7 @@ class ImeiNumberReturn(models.Model):
         self.account_move_id = False
         for rec in self.sale_order.invoice_ids:
             self.account_move_id = rec.id
+            self.invoice_date = rec.invoice_date
             break
     @api.constrains('name')
     def _check_date_end(self):
