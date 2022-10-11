@@ -161,7 +161,7 @@ class ImportEmployee(models.TransientModel):
 		for rec in self.env['sale.order.line'].search([('order_id','=',data['sale_order_id']),('product_id.is_imei_required','=',True)]):
 			for qty in range(int(rec.product_uom_qty)):
 				my_dict['Product'].append(rec.product_id.name)
-				my_dict['IMEI'].append('')
+				my_dict['IMEI'].append(0)
 		print(my_dict)
 		for key, value in my_dict.items():
 			worksheet.write(0, col_num, key)
