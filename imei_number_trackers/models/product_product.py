@@ -6,6 +6,17 @@ class ProductTemplate(models.Model):
     _inherit = 'product.template'
     is_imei_required = fields.Boolean(string="Is IMEI Required")
 
+class SaleOrderLine(models.Model):
+    _inherit ='sale.order.line'
+
+    @api.model
+    def unlink(self):
+        imei_remove_when_removed_from_sale =self.order_id.imei_numbers_id.filtered(lambda p: p.product_id.product_tmpl_id.is_imei_required == True and p.product_id.id == self.product_id.id)
+        
+        imei_remove_when_removed_from_sale.unlink()
+        res = super(SaleOrderLine, self).unlink()
+        return res
+
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
     is_imei_visible = fields.Boolean(compute='check_imei_is_visible')
