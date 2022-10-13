@@ -22,6 +22,7 @@ class ImeiNumberReturn(models.Model):
     team_id = fields.Many2one('crm.team', string='Sales Team', related='sale_order.team_id',store=True)
     location_id = fields.Many2one('stock.location', string='Location', related='sale_order.custom_source_location_id',store=True)
     order_date = fields.Datetime(string='Order Date', related='sale_order.date_order',store=True)
+    state_of_imei = fields.Selection(related='picking_id.state')
 
     @api.depends('sale_order')
     def _compute_invoice(self):

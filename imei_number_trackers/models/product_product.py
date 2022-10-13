@@ -12,8 +12,8 @@ class SaleOrderLine(models.Model):
     @api.model
     def unlink(self):
         imei_remove_when_removed_from_sale =self.order_id.imei_numbers_id.filtered(lambda p: p.product_id.product_tmpl_id.is_imei_required == True and p.product_id.id == self.product_id.id)
-        
-        imei_remove_when_removed_from_sale.unlink()
+        if imei_remove_when_removed_from_sale:
+            imei_remove_when_removed_from_sale.unlink()
         res = super(SaleOrderLine, self).unlink()
         return res
 
@@ -61,7 +61,7 @@ class SaleOrder(models.Model):
                     raise UserError(_('Please enter IMEI Number'))
 
                 else:
-                    if order_product[rec.product_id.id] == imei_product[rec.product_id.id]:
+                    if order_product == imei_product:
                             pass
                     else:
                         raise UserError(_('Please check exceed limit  IMEI Number of Product '+rec.product_id.name))

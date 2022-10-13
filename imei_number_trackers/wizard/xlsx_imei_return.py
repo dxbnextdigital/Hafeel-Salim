@@ -134,24 +134,40 @@ class ImportEmployee(models.TransientModel):
 				sheet = workbook.sheet_by_index(0)
 			except Exception:
 				raise ValidationError(_("Please Select Valid File Format !"))
-			stock_picking_list  =[]
+			stock_picking_list = []
 			for row_no in range(sheet.nrows):
 				val = {}
+				print(row_no)
 				if row_no <= 0:
 					fields = list(map(lambda row: row.value.encode('utf-8'), sheet.row(row_no)))
 				else:
 					line = list(
 						map(lambda row: isinstance(row.value, bytes) and row.value.encode('utf-8') or str(row.value),
 							sheet.row(row_no)))
-					values.update({
-						'Product': line[0],
-						'IMEI': line[1],
-
-					})
+					values = {'Product': line[0], 'IMEI': line[1]}
 					stock_picking_list.append(values)
-		print(values)
-		self.picking_id.pre_xls_entry_before(stock_picking_list)
-		res = self.create_employee(values)
+
+			# print(sale_list)
+			self.picking_id.pre_xls_entry_before(stock_picking_list)
+			#
+			for rec in stock_picking_list:
+				# 	print(rec)
+				res = self.create_employee(rec)
+			# stock_picking_list  =[]
+			# for row_no in range(sheet.nrows):
+			# 	val = {}
+			# 	if row_no <= 0:
+			# 		fields = list(map(lambda row: row.value.encode('utf-8'), sheet.row(row_no)))
+			# 	else:
+			# 		line = list(
+			# 			map(lambda row: isinstance(row.value, bytes) and row.value.encode('utf-8') or str(row.value),
+			# 				sheet.row(row_no)))
+			# 		values = {'Product': line[0], 'IMEI': line[1]}
+			# 		stock_picking_list.append(values)
+
+		# print(stock_picking_list)
+		# self.picking_id.pre_xls_entry_before(stock_picking_list)
+		# res = self.create_employee(values)
 
 	def get_xlsx_report(self, data, response):
 

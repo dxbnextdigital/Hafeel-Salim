@@ -64,6 +64,8 @@
                      <filter string="Customer" name="team_id" context="{'group_by': 'partner_id'}"/>
                      <filter string="Sales Executive" name="user_id" context="{'group_by': 'user_id'}"/>
                      <filter string="Location" name="location_id" context="{'group_by': 'location_id'}"/>
+                                          <filter string="Product" name="product_id" context="{'group_by': 'product_id'}"/>
+
                      <filter string="Date Range" name="order_date" context="{'group_by': 'order_date'}"/>
                  </group>
 
@@ -73,6 +75,7 @@
                  <filter string="Invoice Date" name="filter_invoice_date" date="invoice_date"/>
 
                     <field name="product_barcode"></field>
+                    <field name="name"></field>
                     <field name="product_id"/>
                     <field name="product_brand"></field>
                     <field name="sale_order"/>

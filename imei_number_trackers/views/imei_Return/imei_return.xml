@@ -53,6 +53,7 @@
                     <field name="user_id" optional="hide"></field>
                     <field name="team_id" optional="hide"></field>
                     <field name="location_id" optional="hide"></field>
+                    <field name="state_of_imei" optional="hide"></field>
                 </tree>
             </field>
         </record>
@@ -70,10 +71,12 @@
              <search string="IMEI Numbers">
                  <group expand="0" string="Group By">
                      <filter string="Sales Team" name="team_id" context="{'group_by': 'team_id'}"/>
+                     <filter string="Product" name="product_id" context="{'group_by': 'product_id'}"/>
                      <filter string="Customer" name="team_id" context="{'group_by': 'partner_id'}"/>
                      <filter string="Sales Executive" name="user_id" context="{'group_by': 'user_id'}"/>
                      <filter string="Location" name="location_id" context="{'group_by': 'location_id'}"/>
                      <filter string="Date Range" name="order_date" context="{'group_by': 'order_date'}"/>
+                     <filter string="Done" name="state_of_imei" context="{'state_of_imei': 'Done'}"/>
                  </group>
 
 
