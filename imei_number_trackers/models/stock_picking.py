@@ -13,7 +13,7 @@ class StockMoveLine(models.Model):
         res = super(StockMoveLine, self).unlink()
         return res
 
- 
+
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'

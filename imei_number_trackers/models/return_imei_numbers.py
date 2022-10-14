@@ -12,7 +12,7 @@ class ImeiNumberReturn(models.Model):
     partner_id = fields.Many2one('res.partner',related='sale_order.partner_id',store=True)
 
     sale_order = fields.Many2one('sale.order',related='picking_id.sale_id',store=True)
-    invoice_date = fields.Date(string='Invoice Date', related='account_move_id.invoice_date')
+    invoice_date = fields.Date(string='Invoice Date')
     product_barcode = fields.Char(string='Product Barcode', related='product_id.barcode',store=True)
     # product_id = fields.Many2one('product.product', string='Product')
     product_brand = fields.Many2one('mis.product.brand', related='product_id.brand', string='Product Brand',store=True)
