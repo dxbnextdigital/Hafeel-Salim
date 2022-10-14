@@ -16,6 +16,22 @@ class SaleOrderLine(models.Model):
             imei_remove_when_removed_from_sale.unlink()
         res = super(SaleOrderLine, self).unlink()
         return res
+    def write(self,vals):
+        self.ensure_one()
+
+        if self.order_id.imei_numbers_id:
+            imei_remove_when_removed_from_sale = self.order_id.imei_numbers_id.filtered(lambda
+                                                                                            p: p.product_id.product_tmpl_id.is_imei_required == True and p.product_id.id == self.product_id.id)
+
+            if 'product_uom_qty' in list(vals.keys()):
+                product_uom_qty=vals['product_uom_qty']
+
+                for rec in imei_remove_when_removed_from_sale:
+                    if (product_uom_qty-len(imei_remove_when_removed_from_sale) < 0):
+                        rec.unlink()
+                        product_uom_qty = product_uom_qty +1
+        res = super(SaleOrderLine, self).write(vals)
+        return res
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
