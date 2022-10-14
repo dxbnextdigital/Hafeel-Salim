@@ -164,6 +164,7 @@ class ImportEmployee(models.TransientModel):
 			# 				sheet.row(row_no)))
 			# 		values = {'Product': line[0], 'IMEI': line[1]}
 			# 		stock_picking_list.append(values)
+			self.picking_id.check_imei_number_return_correct()
 
 		# print(stock_picking_list)
 		# self.picking_id.pre_xls_entry_before(stock_picking_list)

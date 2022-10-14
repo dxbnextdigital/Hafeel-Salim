@@ -37,11 +37,16 @@ class StockPicking(models.Model):
         if self.check_is_it_return():
 
             for rec in self.move_ids_without_package:
-                if rec.product_id.is_imei_required:
-                    self.is_imei_visible = True
-                    break
+                if self.state not in ['cancel']:
+                    if rec.product_id.is_imei_required:
+                        self.is_imei_visible = True
+                        break
 
-
+    def action_cancel(self):
+        result = super(StockPicking, self).action_cancel()
+        for rec in self.imei_numbers_id:
+            rec.unlink()
+        return result
 
     def get_product(self, name):
         product = self.env['product.product'].search([('name', '=', name)], limit=1)

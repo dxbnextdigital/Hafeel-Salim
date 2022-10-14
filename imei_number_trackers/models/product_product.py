@@ -38,7 +38,12 @@ class SaleOrder(models.Model):
     is_imei_visible = fields.Boolean(compute='check_imei_is_visible')
 
     imei_numbers_id = fields.One2many('imei.number','sale_order')
-
+    
+    def action_cancel(self):
+        result = super(SaleOrder, self).action_cancel()
+        for rec in self.imei_numbers_id:
+            rec.unlink()
+        return result
     def action_import_imei_numbers(self):
         return {
             'type': 'ir.actions.act_window',
@@ -129,9 +134,10 @@ class SaleOrder(models.Model):
     def check_imei_is_visible(self):
         self.is_imei_visible = False
         for rec in self.order_line:
-            if rec.product_id.is_imei_required:
-                self.is_imei_visible = True
-                break
+            if self.state not in ['cancel']:
+                if rec.product_id.is_imei_required:
+                    self.is_imei_visible = True
+                    break
 
 
 
