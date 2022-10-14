@@ -148,6 +148,8 @@ class ImportEmployee(models.TransientModel):
 			for rec in sale_list:
 			# 	print(rec)
 				res = self.create_employee(rec)
+			self.sale_order_id.check_imei_number_correct()
+
 
 	def get_xlsx_report(self, data, response):
 		print('data',data)
