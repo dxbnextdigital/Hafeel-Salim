@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template>
+
+
+
+
+
+
+<t t-name="ReturnImeiMenu">
+<nav class="navbar navbar-dark bg-primary">
+
+<div class ='container'>
+    <div class="col">
+<button class="nav-link btn o_exit mr-4 imei_back_to_return" style="position: relative;color:white"><i class="fa fa-chevron-left"></i></button>
+    </div>
+      <div class="col font-weight-bold">
+
+            IMEI SCAN
+    </div>
+
+</div>
+
+</nav>
+
+
+
+</t>
+
+
+
+
+
+
+
+
+
+
+
+ <t t-name="ProductView">
+
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+<h1 class="display-5 font-weight-bold">     <t t-esc="widget.current_products.product_id[1]"></t>
+</h1>
+
+
+</nav>
+    </t>
+<!-- count status menu of product-->
+
+     <t t-name="ReturnIMEIBarcode">
+
+
+
+
+
+
+        <div class="o_barcode_message d-flex flex-column justify-content-center align-items-center bg-800">
+            <br></br>
+
+<!--            <div class="o_barcode_pic position-relative text-center mt-2 mb-1">-->
+            <div class="row">
+
+                   <div class="col position-relative text-center">
+                <i class="fa fa-5x mx-auto fa-exclamation-triangle text-white d-none"></i>
+                <img class="o_barcode_icon return_imei_mobile_scanner" src="/stock_barcode/static/img/barcode.svg" alt="Barcode" height="40px"/>
+      <div class="mb-3">
+                <span class="o_scan_message o_scan_message_scan_products">Scan IMEI</span>
+
+            </div>
+                       <br></br>
+
+    </div>
+
+                 <div class="col position-relative text-center">
+
+                     OR
+
+    </div>
+
+
+                        <div class="col position-relative text-center">
+
+
+  <i class="fa fa-5x mx-auto fa-exclamation-triangle text-white d-none"></i>
+                <img class="o_barcode_icon  button_is_typing_activated" src="/imei_number_trackers/static/img/typing.png" alt="Barcode" height="40px"/>
+      <div class="mb-3">
+                <span class="o_scan_message o_scan_message_scan_products">Type IMEI</span>
+
+            </div>
+    </div>
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+    </t>
+
+
+<t t-name="ReturnImeiNextListCount">
+<div class="row">
+
+    <button class="nav-link btn o_exit mr-4" style="position: relative;color:white"> <t t-esc="widget.current_view_imei.length"></t>/ <t t-esc="widget.current_products.product_uom_qty"></t> </button>
+
+
+
+
+</div>
+
+
+
+</t>
+
+
+
+
+
+<t t-name="ReturnImeiNextPrevious">
+<div class="row">
+
+        <button class="nav-link btn o_exit mr-4 imei_sale_previous_to_return" style="position: relative;color:white" ><i class="fa fa-chevron-left"></i></button>
+    <button class="nav-link btn o_exit mr-4" style="position: relative;color:white"><t t-esc="widget.page_number"></t> / <t t-esc="widget.products.length"></t></button>
+
+        <button class="nav-link btn o_exit mr-4 imei_sale_next_to_return" style="position: relative;color:white"><i class="fa fa-chevron-right"></i></button>
+
+
+
+</div>
+
+
+
+</t>
+
+
+
+
+
+<!-- product move status bar-->
+
+
+
+
+
+
+
+  <t t-name="ReturnIMEIProuctStatus">
+<nav class="navbar navbar-dark bg-dark">
+
+<div class="container">
+
+        <div class="col-5">
+
+<div class="mx-auto" >
+        <t t-call="ReturnImeiNextListCount"></t>
+</div>
+    </div>
+    <div class="col">
+        <t t-call="ReturnImeiNextPrevious"></t>
+
+    </div>
+
+
+
+</div>
+
+</nav>
+  </t>
+
+
+
+
+
+<t t-name="ReturnImeiNumberList">
+        <div class="o_barcode_line list-group-item d-flex flex-row flex-nowrap" data-id="12">
+                    <div class="o_barcode_line_details flex-grow-1 flex-column flex-nowrap">
+                        <div class="o_barcode_line_title pb-1">
+                            <span><t t-esc="o.name"></t> </span>
+                        </div>
+
+
+                    </div>
+
+
+                    <button class="o_line_button o_add_unit btn btn-primary ml-2 ml-sm-4 btn-dark imei_sale_delete" data-reserved="NaN" t-att-id="o.id">
+                        <i class="fa fa-trash" ></i>
+
+                    </button>
+
+
+
+
+
+        </div>
+    </t>
+
+
+
+
+
+
+
+    <t t-name="ReturnImeiManualEntry">
+
+
+
+
+        <nav class="navbar navbar-expand-lg  navbar-light bg-light">
+
+                     <div class="container">
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarColor01">
+
+    <div class="input-group input-group-lg">
+
+  <input type="text" class="form-control imei_sale_input_texts" aria-label="Large" accesskey="h" aria-describedby="inputGroup-sizing-sm"/>
+         <div class="input-group-append">
+    <button class="btn  btn-dark add_screen_imei_sale_order" type="button">Add</button>
+  </div>
+    </div>
+</div>
+
+    </div>
+  </nav>
+
+
+
+
+    </t>
+
+
+
+
+
+
+
+<t t-name="EntryLimitCrossed">
+    <div class="alert alert-danger" role="alert">
+The limit of entries exceeded than required quantities    </div>
+
+
+
+</t>
+
+
+
+
+
+
+
+
+    <!--    main widget-->
+    <t t-name="ImeiReturnScreen">
+
+     <t t-call="ReturnImeiMenu"></t>
+        <t t-call="ProductView"></t>
+        <t t-call="ReturnIMEIBarcode"></t>
+
+    <t t-if="!widget.is_typing">
+                           <t t-call="ReturnImeiManualEntry"></t>
+
+
+
+     </t>
+             <t t-call="ReturnIMEIProuctStatus"></t>
+
+
+        <t t-foreach="widget.current_view_imei" t-as="o">
+         <t t-call="ReturnImeiNumberList" ></t>
+
+
+</t>
+
+
+    </t>
+
+</template>

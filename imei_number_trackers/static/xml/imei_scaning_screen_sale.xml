@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template>
+
+
+
+
+ <t t-name="SaleImeiScreen">
+
+
+   <t t-call="ReturnImeiMenu"></t>
+        <t t-call="ProductView"></t>
+        <t t-call="ReturnIMEIBarcode"></t>
+
+    <t t-if="!widget.is_typing">
+                           <t t-call="ReturnImeiManualEntry"></t>
+
+
+
+     </t>
+             <t t-call="ReturnIMEIProuctStatus"></t>
+
+
+        <t t-foreach="widget.current_view_imei" t-as="o">
+         <t t-call="ReturnImeiNumberList" ></t>
+
+
+</t>
+
+
+    </t>
+
+</template>

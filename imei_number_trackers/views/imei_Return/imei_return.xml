@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="ModelName_form_view" model="ir.ui.view">
+            <field name="name">ProjectName.ModelName.form</field>
+            <field name="model">imei.number.return</field>
+            <field name="arch" type="xml">
+                <form create="false" delete="false" edit="false">
+                    <sheet>
+                        <div class="oe_title">
+                        <h1>
+                            <field name="name"  readonly="1"/>
+                        </h1>
+                    </div>
+<group>
+
+                      <field name="product_barcode"></field>
+
+                    <field name="product_id"/>
+
+                    <field name="product_brand"></field>
+                    <field name="sale_order"/>
+                    <field name="partner_id"></field>
+                    <field name="order_date"></field>
+                    <field name="account_move_id" ></field>
+                    <field name="invoice_date"></field>
+                    <field name="user_id"></field>
+                    <field name="team_id"></field>
+                    <field name="location_id"></field>
+
+</group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="ModelName_tree_view" model="ir.ui.view">
+            <field name="name">ProjectName.ModelName.tree</field>
+            <field name="model">imei.number.return</field>
+            <field name="arch" type="xml">
+                <tree create="false" delete="false" edit="false">
+            <field name="name"/>
+                    <field name="product_barcode"></field>
+                    <field name="product_id"/>
+                    <field name="product_brand"></field>
+                    <field name="sale_order"/>
+                    <field name="partner_id"></field>
+                    <field name="order_date"></field>
+                    <field name="account_move_id" ></field>
+                    <field name="invoice_date" optional="hide"></field>
+                    <field name="user_id" optional="hide"></field>
+                    <field name="team_id" optional="hide"></field>
+                    <field name="location_id" optional="hide"></field>
+                    <field name="state_of_imei" optional="hide"></field>
+                </tree>
+            </field>
+        </record>
+
+
+
+
+
+
+
+        <record id="view_product_imei_return_search" model="ir.ui.view">
+         <field name="name">view product imei search</field>
+         <field name="model">imei.number.return</field>
+         <field name="arch" type="xml">
+             <search string="IMEI Numbers">
+                 <group expand="0" string="Group By">
+                     <filter string="Sales Team" name="team_id" context="{'group_by': 'team_id'}"/>
+                     <filter string="Product" name="product_id" context="{'group_by': 'product_id'}"/>
+                     <filter string="Customer" name="team_id" context="{'group_by': 'partner_id'}"/>
+                     <filter string="Sales Executive" name="user_id" context="{'group_by': 'user_id'}"/>
+                     <filter string="Location" name="location_id" context="{'group_by': 'location_id'}"/>
+                     <filter string="Date Range" name="order_date" context="{'group_by': 'order_date'}"/>
+                     <filter string="Done" name="state_of_imei" context="{'state_of_imei': 'Done'}"/>
+                 </group>
+
+
+                 <filter string="Create Date" name="filter_create_date" date="create_date"/>
+                 <filter string="Order Date" name="filter_order_date" date="order_date"/>
+                 <filter string="Invoice Date" name="filter_invoice_date" date="invoice_date"/>
+
+                    <field name="product_barcode"></field>
+                    <field name="product_id"/>
+                    <field name="product_brand"></field>
+                    <field name="sale_order"/>
+                    <field name="order_date"></field>
+                    <field name="account_move_id" ></field>
+                    <field name="invoice_date"></field>
+                    <field name="user_id"></field>
+                    <field name="team_id"></field>
+                    <field name="location_id"></field>
+         </search>
+         </field>
+     </record>
+
+
+
+
+
+
+
+
+
+        <record id="imei_return_act_window" model="ir.actions.act_window">
+            <field name="name">IMEI Return</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">imei.number.return</field>
+<!--            <field name="view_type">form</field>-->
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    There is no examples click here to add new ModelTitle.
+                </p>
+            </field>
+        </record>
+
+        <menuitem name="IMEI" parent="root_imei_number_menu" id="imei_sale_menu_sale"  action="imei_number_act_window"/>
+        <menuitem name="IMEI RETURN" parent="root_imei_number_menu" id="ModelName_menu_return"  action="imei_return_act_window"/>
+
+    </data>
+</odoo>

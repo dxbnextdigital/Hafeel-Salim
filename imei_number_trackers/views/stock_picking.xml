@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+
+
+
+
+
+
+           <record id="imei_return_screen_imei_main_view" model="ir.actions.client">
+        <field name="name">Barcode Interface</field>
+        <field name="tag">imei_number_trackers.ReturnImeiScreen</field>
+        <field name="target">fullscreen</field>
+    </record>
+
+
+        <record id="stock_valuation_new_picking" model="ir.ui.view">
+        <field name="name">stock.readonly.app</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_cancel']"  position="before">
+<field name="is_imei_visible" invisible="1"></field>
+   <button name="%(imei_return_screen_imei_main_view)d"
+                    string="IMEI"
+                    type="action"
+                    class="oe_stat_button"
+                    icon="fa-mobile"
+           attrs="{'invisible': [('is_imei_visible','!=',True)]}"
+                    context="{'default_sale_id': active_id}"/>
+
+
+                           <button name="action_import_imei_numbers" string="Import IMEI " attrs="{'invisible': [('is_imei_visible','!=',True)]}" type="object"></button>
+
+                </xpath>
+
+        </field>
+    </record>
+
+
+    </data>
+</odoo>
