@@ -3,7 +3,7 @@
         <xpath expr="//div[@id='qrcode']" position="after">
             <div id="imei_details" style="page-break-before: always;">
 
-                <t t-if="o.sale_id">
+                <t t-if="o.sale_id.imei_numbers_id">
 
                     <strong>IMEI List:</strong>
                     <t t-set="count" t-value="0"></t>
