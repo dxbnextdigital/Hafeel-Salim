@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+
+        <record model="ir.module.category" id="module_on_payment_restriction">
+            <field name="name">Non Payment Restriction</field>
+            <field name="sequence">60</field>
+            <field name="visible" eval="0" />
+
+
+
+        </record>
+
+
+
+        <record id="group_non_payment_restriction_admin" model="res.groups">
+        <field name="name">Allow Non Payment </field>
+        <field name="category_id" ref="change_group_on_payment_block.module_on_payment_restriction"/>
+
+
+    </record>
+
+
+
+
+
+
+
+    </data>
+</odoo>
