@@ -4,6 +4,17 @@ from odoo import fields, models, api
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
+    def chunkIt(self,seq, num):
+        avg = int(len(seq) / num)
+        out = []
+        last = 0.0
+
+        while last < len(seq):
+            out.append(seq[int(last):int(last + avg)])
+            last += avg
+
+        return out
+
     def get_details_imei(self):
         data ={}
 
@@ -15,7 +26,10 @@ class SaleOrder(models.Model):
             data[rec.product_id.name] = temp
         new_list = []
         for key, val in data.items():
-            new_list.append([key, val])
+            new_list.append([key, self.chunkIt(val,5)])
+
+
+        print(new_list)
         return new_list
 
 class AccountMove(models.Model):
