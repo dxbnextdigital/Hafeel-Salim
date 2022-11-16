@@ -7,7 +7,6 @@ class ImeiNumbers(models.Model):
     _description = 'Description'
     _sql_constraints = [('name', 'unique(name)', 'IMEI should be Unique')]
 
-    company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
 
     name = fields.Char(required=True)
     sale_order = fields.Many2one('sale.order')

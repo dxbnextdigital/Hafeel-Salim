@@ -10,7 +10,7 @@ class ImeiNumberReturn(models.Model):
     picking_id = fields.Many2one('stock.picking')
     account_move_id = fields.Many2one('account.move', string='Invoice' ,compute ='_compute_invoice')
     partner_id = fields.Many2one('res.partner',related='sale_order.partner_id',store=True)
-    company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
+
     sale_order = fields.Many2one('sale.order',related='picking_id.sale_id',store=True)
     invoice_date = fields.Date(string='Invoice Date')
     product_barcode = fields.Char(string='Product Barcode', related='product_id.barcode',store=True)
