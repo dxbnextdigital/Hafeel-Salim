@@ -8,8 +8,7 @@
     'depends': ['account','sale','sale_management','stock','sales_source_location'],
     'data': [
         'security/ir.model.access.csv',
-        'security/res_partner.xml',
-
+        'security/recording_rule.xml',
         'views/assets.xml',
 'views/sale_order.xml',
         'views/imei_number.xml',
