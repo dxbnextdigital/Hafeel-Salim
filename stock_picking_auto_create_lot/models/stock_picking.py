@@ -1,11 +1,12 @@
 # Copyright 2018 Tecnativa - Sergio Teruel
 # Copyright 2020 ACSONE SA/NV
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
-from odoo import models
+from odoo import models, fields, api
 
 
 class StockPicking(models.Model):
     _inherit = "stock.picking"
+    has_lots_number = fields.Boolean(defualt=False)
 
     def _set_auto_lot(self):
         """
@@ -20,6 +21,9 @@ class StockPicking(models.Model):
                 and x.product_id.auto_create_lot
             )
         )
+        if lines:
+            self.has_lots_number = True
+
         lines.set_lot_auto()
 
     def _action_done(self):

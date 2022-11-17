@@ -2,8 +2,8 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 from odoo import models
 from odoo.fields import first
-from datetime import datetime
 
+from datetime import date, datetime
 
 class StockMoveLine(models.Model):
 
@@ -23,19 +23,25 @@ class StockMoveLine(models.Model):
         products, we apply the lot with both different approaches.
         """
         values = []
+        sql='''select
+        count(id)
+        from stock_picking where
+        create_date > date_trunc('day', CURRENT_DATE) 
+        and has_lots_number = True and company_id = '''+str(self.env.company.id)
+        print("self", self.env.company.id)
+        self.env.cr.execute(sql)
+        today_count =self.env.cr.dictfetchone()
         production_lot_obj = self.env["stock.production.lot"]
         lots_by_product = dict()
-
         for line in self:
             values.append(line._prepare_auto_lot_values())
         lots = production_lot_obj.create(values)
         for lot in lots:
-            lot.name = str(datetime.today().strftime('%d%m%Y'))+"-"+lot.name
+            lot.name = lot.name.split('-')[0]+str(datetime.today().strftime('%d%m%Y'))+"-0"+str(today_count['count']+1)
             if lot.product_id.id not in lots_by_product:
                 lots_by_product[lot.product_id.id] = lot
             else:
                 lots_by_product[lot.product_id.id] += lot
-            print('lot',lot)
         for line in self:
             lot = first(lots_by_product[line.product_id.id])
             line.lot_id = lot
