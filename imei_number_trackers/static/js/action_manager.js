@@ -21,7 +21,7 @@ ActionManager.include({
      * @returns {Promise} resolved when the action has been executed
      */
     _executexlsxReportDownloadAction: function (action) {
-    alert("okay")
+//     alert("okay")
         framework.blockUI();
         var def = $.Deferred();
         session.get_file({
