@@ -276,6 +276,8 @@
         <menuitem
                 id="root_menuitem_res_check"
                 name="Check In/Out"
+                            web_icon="check_in_check_out_app,static/description/icon.png"
+
                 action="res_check_root_act_window"
 
         />
