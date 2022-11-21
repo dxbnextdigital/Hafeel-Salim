@@ -5,33 +5,9 @@ class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
     def chunkIt(self,seq, num):
-        # def chunkIt(self, seq, num):
-        #     avg = 4
-            temp = []
-            main = []
-            count = 0
-
-            for rec in seq:
-                count = count + 1
-                if count % 4 == 0:
-                    temp.append(rec)
-                    main.append(temp)
-                    temp = []
-                else:
-                    temp.append(rec)
-                    main.append(temp)
-
-            return main
-        # avg = int(len(seq) / num)
-        # out = []
-        # last = 0.0
-        #
-        # while last < len(seq):
-        #     out.append(seq[int(last):int(last + avg)])
-        #     last += avg
-        #
-        # return out
-
+        # looping till length l
+            for i in range(0, len(seq), num):
+                yield seq[i:i + num]
     def get_details_imei(self):
         data ={}
 
