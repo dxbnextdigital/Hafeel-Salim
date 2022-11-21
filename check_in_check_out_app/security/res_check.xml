@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record model="ir.rule" id="res_users_log_rule">
+            <field name="name">Multi Company Check In and Check Out</field>
+            <field name="model_id" ref="model_res_check"/>
+            <field name="domain_force">['|',('company_id','=',False),('company_id', 'in', company_ids)]</field>
+        </record>
+
+
+        <record model="ir.module.category" id="module_res_check_in_tracker">
+            <field name="name">Check In/Check Out</field>
+        </record>
+
+        <record id="group_check_in_tracker_restriction_admin" model="res.groups">
+            <field name="name">Administrator</field>
+            <field name="category_id" ref="check_in_check_out_app.module_res_check_in_tracker"/>
+        </record>
+
+
+    </data>
+</odoo>
