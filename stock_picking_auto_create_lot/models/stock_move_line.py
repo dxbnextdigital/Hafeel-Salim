@@ -37,7 +37,7 @@ class StockMoveLine(models.Model):
             values.append(line._prepare_auto_lot_values())
         lots = production_lot_obj.create(values)
         for lot in lots:
-            lot.name = lot.name.split('-')[0]+str(datetime.today().strftime('%d%m%Y'))+"-0"+str(today_count['count']+1)
+            lot.name = lot.company_id.lot_sequence+str(datetime.today().strftime('%d%m%Y'))+"-0"+str(today_count['count']+1)
             if lot.product_id.id not in lots_by_product:
                 lots_by_product[lot.product_id.id] = lot
             else:

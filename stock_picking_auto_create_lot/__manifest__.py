@@ -12,6 +12,6 @@
     "license": "AGPL-3",
     "installable": True,
     "depends": ["stock"],
-    "data": ["views/product_views.xml", "views/stock_picking_type_views.xml"],
+    "data": ["views/product_views.xml", "views/stock_picking_type_views.xml","views/res_company.xml"],
     "maintainers": ["sergio-teruel"],
 }
