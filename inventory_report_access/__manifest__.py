@@ -15,8 +15,8 @@ Custom Inventory Report    """,
         'stock_account'
     ],
     'data': [
+        'security/ir_module_category.xml',
         'security/ir.model.access.csv',
-        'security/ir_module_category.xml'
            ],
     'installable': True,
     'application': False,
