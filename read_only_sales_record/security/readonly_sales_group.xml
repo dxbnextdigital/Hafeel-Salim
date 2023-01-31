@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+                <record model="ir.module.category" id="module_readonly_sales_order">
+            <field name="name">Read Only Sale</field>
+            <field name="sequence">60</field>
+            <field name="visible" eval="1" />
+        </record>
+
+
+
+
+          <record id="group_inventory_readonly" model="res.groups">
+        <field name="name">Inventory Readonly</field>
+    </record>
+
+  <record id="group_billing_readonly" model="res.groups">
+        <field name="name">Billing Readonly</field>
+    </record>
+
+  <record id="group_imei_visible" model="res.groups">
+        <field name="name">IMEI VISIBLE</field>
+    </record>
+
+  <record id="group_sales_readonly" model="res.groups">
+        <field name="name">Sales_readonly</field>
+        <field name="category_id" ref="read_only_sales_record.module_readonly_sales_order"/>
+                  <field name="implied_ids" eval="[(6, 0, [ref('read_only_sales_record.group_billing_readonly'),ref('read_only_sales_record.group_inventory_readonly')])]"/>
+         <field name="menu_access" eval="[(6, 0, [ref('sale.report_sales_team'),ref('sale.res_partner_menu'),ref('sale.menu_sale_invoicing')
+         ,ref('sale.menu_sale_order_invoice'),ref('sale.menu_sale_order_upselling'),ref('sale.product_menu_catalog'),ref('sale.menu_product_template_action')
+         ])]"></field>
+
+    </record>
+
+
+
+         <record id="view_order_form_inherit_l10n_in_sale_new" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.l10n.in.sale</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="imei_number_trackers.view_order_form_inherit_l10n_in_sale"/>
+        <field name="arch" type="xml">
+
+            <xpath  expr="//button[@type='action']"            position="attributes">
+
+                    <attribute name="groups">read_only_sales_record.group_imei_visible</attribute>
+            </xpath>
+
+    <xpath  expr="//button[@name='action_import_imei_numbers']"            position="attributes">
+
+                    <attribute name="groups">read_only_sales_record.group_imei_visible</attribute>
+            </xpath>
+
+
+        </field>
+         </record>
+
+
+
+
+
+
+
+
+
+
+    </data>
+</odoo>

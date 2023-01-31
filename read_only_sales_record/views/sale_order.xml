@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+      <record id="action_restriction_quotations_with_onboarding" model="ir.actions.act_window">
+            <field name="name">Quotations Test</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_id" ref="sale.view_quotation_tree_with_onboarding"/>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+            <field name="search_view_id" ref="sale.sale_order_view_search_inherit_quotation"/>
+            <field name="context">{'search_default_my_quotation': 1}</field>
+            <field name="domain">['|',('team_id.member_ids','in',uid),('team_id.user_id','=',uid)]</field>
+
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create a new quotation, the first step of a new sale!
+              </p><p>
+                Once the quotation is confirmed by the customer, it becomes a sales order.<br/> You will be able to create an invoice and collect the payment.
+              </p>
+            </field>
+        </record>
+
+
+
+          <record id="action_restrict_orders" model="ir.actions.act_window">
+            <field name="name">Sales Orders Test</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+            <field name="search_view_id" ref="sale.sale_order_view_search_inherit_sale"/>
+            <field name="context">{}</field>
+            <field name="domain">[('state', 'not in', ('draft', 'sent', 'cancel')),'|',('team_id.member_ids','in',uid),('team_id.user_id','=',uid)]</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new quotation, the first step of a new sale!
+                </p><p>
+                    Once the quotation is confirmed, it becomes a sales order.<br/> You will be able to create an invoice and collect the payment.
+                </p>
+            </field>
+        </record>
+
+
+
+
+
+
+
+
+ <record id="action_move_out_refund_custom_type" model="ir.actions.act_window">
+            <field name="name">Credit Notes test</field>
+            <field name="res_model">account.move</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="view_id" ref="account.view_invoice_tree"/>
+            <field name="search_view_id" ref="account.view_account_invoice_filter"/>
+            <field name="domain">[('move_type', '=', 'out_refund'),'|',('team_id.member_ids','in',uid),('team_id.user_id','=',uid)]</field>
+            <field name="context">{'default_move_type': 'out_refund'}</field>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create a credit note
+              </p><p>
+                Note that the easiest way to create a credit note is to do it directly
+                from the customer invoice.
+              </p>
+            </field>
+        </record>
+
+
+    <record id="action_account_custom_payments" model="ir.actions.act_window">
+            <field name="name">Payments test</field>
+            <field name="res_model">account.payment</field>
+                    <field name="domain">['|',('team_id.member_ids','in',uid),('team_id.user_id','=',uid)]</field>
+
+            <field name="view_mode">tree,kanban,form,graph</field>
+            <field name="context">{
+                'default_payment_type': 'inbound',
+                'default_partner_type': 'customer',
+                'search_default_inbound_filter': 1,
+                'default_move_journal_types': ('bank', 'cash'),
+            }</field>
+            <field name="view_id" ref="account.view_account_payment_tree"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                  Register a payment
+                </p><p>
+                  Payments are used to register liquidity movements. You can process those payments by your own means or by using installed facilities.
+                </p>
+            </field>
+        </record>
+
+
+
+
+
+<record id="restriction_res_partner_action_customer" model="ir.actions.act_window">
+            <field name="name">Customers</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">['|','|',('team_id.member_ids','in',uid),('team_id.user_id','=',uid),('team_id','=',False)]</field>
+
+            <field name="context">{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}</field>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create a new customer in your address book
+              </p><p>
+                Odoo helps you easily track all activities related to a customer.
+              </p>
+            </field>
+        </record>
+
+
+
+
+    <menuitem
+        id="restricted_custom_app_record"
+        name="Customer"
+        parent="account.menu_finance_receivables"
+        action="restriction_res_partner_action_customer"
+                groups ="group_sale_base_on_salesteam_visible"
+
+    sequence="4"
+        />
+
+
+
+
+
+
+
+
+
+    <menuitem
+        id="restricted_quotation_record"
+        name="Quotations"
+        parent="sale.sale_order_menu"
+        action="action_restriction_quotations_with_onboarding"
+                groups ="group_sale_base_on_salesteam_visible"
+
+        sequence="2"
+        />
+
+
+
+ <menuitem
+        id="restricted_account_payment"
+        name="Payment"
+        parent="account.menu_finance_receivables"
+        action="action_account_custom_payments"
+                groups ="group_sale_base_on_salesteam_visible"
+
+        sequence="2"
+        />
+
+
+    <menuitem
+        id="restricted_credit_note_record"
+        name="Credit Notes"
+        parent="account.menu_finance_receivables"
+        action="action_move_out_refund_custom_type"
+                groups ="group_sale_base_on_salesteam_visible"
+
+        sequence="1"
+        />
+
+        <menuitem
+        id="restricted_sales_record"
+        name="Orders"
+        parent="sale.sale_order_menu"
+        groups ="group_sale_base_on_salesteam_visible"
+        action="action_restrict_orders"
+        sequence="2"
+        />
+
+
+
+
+        <record id="account_followup.customer_statements_menu" model="ir.ui.menu">
+              <field name="groups_id" eval="[(6,0,[ref('sale_order_restriction.group_sale_administrator_visible')])]"/>
+
+        </record>
+
+        <record id="sale.menu_sale_order" model="ir.ui.menu">
+              <field name="groups_id" eval="[(6,0,[ ref('sale_order_restriction.group_sale_administrator_visible')])]"/>
+
+        </record>
+
+
+          <record id="account.menu_action_move_out_refund_type" model="ir.ui.menu">
+              <field name="groups_id" eval="[(6,0,[ ref('sale_order_restriction.group_sale_administrator_visible')])]"/>
+
+        </record>
+
+
+
+          <record id="account.menu_account_customer" model="ir.ui.menu">
+              <field name="groups_id" eval="[(6,0,[ ref('sale_order_restriction.group_sale_administrator_visible')])]"/>
+
+        </record>
+
+
+
+          <record id="account.menu_action_account_payments_receivable" model="ir.ui.menu">
+              <field name="groups_id" eval="[(6,0,[ ref('sale_order_restriction.group_sale_administrator_visible')])]"/>
+
+        </record>
+<!--  <record id="sale.menu_sale_order" model="ir.ui.menu">-->
+<!--&lt;!&ndash;            <field name="groups_id" ref="invoice_restriction.group_invoice_administrator_visible"/>&ndash;&gt;-->
+<!--              <field name="groups" ref="[(4, ref('sale_order_restriction.group_sale_administrator_visible'))]"/>-->
+
+<!--        </record>-->
+
+
+    </data>
+</odoo>
+
+
+
+
+
+
