@@ -21,7 +21,7 @@
                             <field name="partner_id"></field>
 
                     <field name="order_date"></field>
-                    <field name="account_move_id" ></field>
+                    <field name="account_move_id"  widget="many2many_tags"></field>
                     <field name="invoice_date" ></field>
                     <field name="user_id" ></field>
                     <field name="team_id"></field>
@@ -44,7 +44,7 @@
                     <field name="product_brand" readonly="1"></field>
                     <field name="sale_order" readonly="1"/>
                     <field name="order_date" readonly="1"></field>
-                    <field name="account_move_id" readonly="1" ></field>
+                    <field name="account_move_id" readonly="1"  widget="many2many_tags"></field>
                     <field name="invoice_date" optional="hide"></field>
                     <field name="user_id" optional="hide"></field>
                     <field name="team_id" optional="hide"></field>
