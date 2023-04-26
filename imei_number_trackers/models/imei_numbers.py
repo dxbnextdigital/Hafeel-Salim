@@ -12,7 +12,7 @@ class ImeiNumbers(models.Model):
     name = fields.Char(required=True)
     sale_order = fields.Many2one('sale.order')
     product_id = fields.Many2one('product.product')
-    account_move_id = fields.Many2one('account.move', string='Invoice' ,compute ='_compute_invoice')
+    account_move_id = fields.Many2many('account.move', related="sale_order.invoice_ids" ,string='Invoice')
     partner_id = fields.Many2one('res.partner',related='sale_order.partner_id',store=True)
 
     # invoice_id = fields.Many2one('account.move', string='Invoice No')
