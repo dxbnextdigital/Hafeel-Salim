@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+<record id="group_invoice_administrator_visible" model="res.groups">
+        <field name="name">Visible Invoice Administrator (Full)</field>
+
+</record>
+
+
+        <record id="group_invoice_base_on_salesteam_visible" model="res.groups">
+        <field name="name">Visible Invoice Based on Sales Teams </field>
+
+</record>
+
+
+
+    </data>
+</odoo>

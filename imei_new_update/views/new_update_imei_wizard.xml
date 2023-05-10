@@ -2,53 +2,16 @@
 <odoo>
     <data>
 
-        <record id="test_imei_one_tree_view" model="ir.ui.view">
-            <field name="name">imei.new.update.form</field>
-            <field name="model">test.imei.one</field>
-            <field name="arch" type="xml">
-                <tree editable="bottom">
-                <field name="imei_number"></field>
-                </tree>
-            </field>
-        </record>
-        <record id="test_imei_one_tree_view" model="ir.ui.view">
-            <field name="name">imei.new.update.form</field>
-            <field name="model">test.imei.one</field>
-            <field name="arch" type="xml">
-                <tree editable="bottom" create="false">
-                <field name="product_id"></field>
-                <field name="imei_number"></field>
-<!--                    <field name="status"></field>-->
-                </tree>
-            </field>
-        </record>
 
-
-
-            <record id="imei_new_update_form_view" model="ir.ui.view">
-            <field name="name">imei.new.update.form</field>
-            <field name="model">imei.update.new</field>
-            <field name="arch" type="xml">
-                <form string="IMEI">
-                    <sheet>
-                        <group>
-                            <group>
-                                <field name="sale_order_lines"></field>
-                                <field name="sale_order_id" readonly="1" ></field>
-
-                            </group>
-                            <group>
-                                <field name="numbers_emi"></field>
-<!--                                <button string="Next"  type="object"  name="onchange_method"/>-->
-
-
-                            </group>
-                        </group>
-                        <field name="new_product_imei"></field>
-
-                    </sheet>
-                </form>
-            </field>
+         <record id="get_missing_value" model="ir.cron">
+            <field name="name">TEST 0007</field>
+            <field name="model_id" ref="model_test_imei_one"/>
+            <field name="type">ir.actions.server</field>
+            <field name="state">code</field>
+            <field name="code">model.get_inform_missing()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
         </record>
 
     </data>

@@ -32,54 +32,29 @@ class SaleOrder(models.Model):
                 raise UserError(_('You can not confirm Sale '
                                   'Order. \n' + msg))
             else:
-                if partner.over_credit:
-                    return True
-                else:
+                for status in self:
+                    amount_total += status.amount_total
 
-                    for status in self:
-                        amount_total += status.amount_total
-                    print(amount_total)
-                    for line in movelines:
-                        credit += line.credit
-                        debit += line.debit
-                    partner_credit_limit = (partner.credit_limit - debit) + credit
-                    available_credit_limit = \
-                        (partner_credit_limit - debit)
-                    # if (amount_total - debit) > available_credit_limit:
-                    #     if not partner.over_credit:
-                    #         # msg = 'Your available credit limit' \
-                    #         #       ' Amount = %s \nCheck "%s" Accounts or Credit ' \
-                    #         #       'Limits.' % (partner.credit_limit,
-                    #         #                    self.partner_id.name)
-                    #
-                    #         msg = 'The transaction amount is over and above the credit limit (AED %s).' \
-                    #             '\nIf require to processed further please increase the credit limit. ' % format((partner.credit_limit), '.2f')
-                    #
-                    #         raise UserError(_('You can not confirm Sale '
-                    #                           'Order. \n' + msg))
-                    # partner.write(
-                    #     {'credit_limit': credit - debit + self.amount_total})
-                    tot = 0.00
-                    partner_lmt = 0.00
-                    is_unlimited = False
-                    strdate = ''
-                    for rec in self:
-                        partner_lmt += rec.partner_id.credit_limit
-                        is_unlimited = rec.partner_id.over_credit
-                        objinv = self.env['account.move'].search(
-                            [('partner_id', '=', rec.partner_id.id), ('move_type', '=', 'out_invoice'),
-                             ('state', '=', 'posted'),
-                             ('amount_residual', '>', 0.0)])
-                        for recinv in objinv:
-                            tot += recinv.amount_residual
-                        print(((partner_lmt - tot) - rec.amount_total))
-                        if ((partner_lmt - tot) - rec.amount_total) < 0:
-                            msg = 'The transaction amount is over and above the credit limit (AED %s).' \
-                                  '\nIf require to processed further please increase the credit limit. ' % format(
-                                (partner_lmt), '.2f')
+                for line in movelines:
+                    credit += line.credit
+                    debit += line.debit
+                partner_credit_limit = (partner.credit_limit - debit) + credit
+                available_credit_limit = \
+                    (partner_credit_limit - debit)
+                if (amount_total - debit) > available_credit_limit:
+                    if not partner.over_credit:
+                        # msg = 'Your available credit limit' \
+                        #       ' Amount = %s \nCheck "%s" Accounts or Credit ' \
+                        #       'Limits.' % (partner.credit_limit,
+                        #                    self.partner_id.name)
 
-                            raise UserError(_('You can not confirm Sale '
-                                              'Order. \n' + msg))
+                        msg = 'The transaction amount is over and above the credit limit (AED %s).' \
+                            '\nIf require to processed further please increase the credit limit. ' % format((partner.credit_limit), '.2f')
+
+                        raise UserError(_('You can not confirm Sale '
+                                          'Order. \n' + msg))
+                # partner.write(
+                #     {'credit_limit': credit - debit + self.amount_total})
             return True
 
     def action_confirm(self):
