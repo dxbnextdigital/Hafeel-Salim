@@ -91,7 +91,9 @@ class StockPicking(models.Model):
         order_product ={}
         imei_product ={}
         for rec in self.move_ids_without_package.filtered(lambda  p : p.product_id.product_tmpl_id.is_imei_required == True):
-            order_product[rec.product_id.id] =rec.product_uom_qty
+            order_product[rec.product_id.id] =0
+        for rec in self.move_ids_without_package.filtered(lambda  p : p.product_id.product_tmpl_id.is_imei_required == True):
+            order_product[rec.product_id.id] =  order_product[rec.product_id.id] +rec.product_uom_qty
         for rec in self.imei_numbers_id:
             imei_product[rec.product_id.id] =  0.0
         for rec in self.imei_numbers_id:

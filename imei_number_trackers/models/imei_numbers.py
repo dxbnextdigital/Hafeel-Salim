@@ -27,6 +27,9 @@ class ImeiNumbers(models.Model):
     location_id = fields.Many2one('stock.location', string='Location', related='sale_order.custom_source_location_id',store=True)
     order_date = fields.Datetime(string='Order Date',related='sale_order.date_order',store=True)
 
+
+
+
     @api.depends('sale_order')
     def _compute_invoice(self):
         self.account_move_id = False
