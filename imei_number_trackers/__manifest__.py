@@ -2,7 +2,7 @@
 
 {
     'name': 'IMEI TRACKER',
-    'version': '14.0.1.3.0',
+    'version': '14.0.1.2.0',
     'summary': '',
     'description': '',
     'depends': ['account','sale','sale_management','stock','sales_source_location'],
