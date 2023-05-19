@@ -272,12 +272,16 @@ The limit of entries exceeded than required quantities    </div>
      </t>
              <t t-call="ReturnIMEIProuctStatus"></t>
 
-
-        <t t-foreach="widget.current_view_imei" t-as="o">
+<div style=" overflow: scroll">
+            <t t-foreach="widget.current_view_imei" t-as="o">
          <t t-call="ReturnImeiNumberList" ></t>
 
 
 </t>
+
+
+</div>
+
 
 
     </t>

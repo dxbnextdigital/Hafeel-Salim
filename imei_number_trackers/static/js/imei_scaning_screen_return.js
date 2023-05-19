@@ -26,6 +26,64 @@ var ReturnImeiScreen = AbstractAction.extend({
 
 
 
+     merge_same_order_line : function(order_list)
+ {
+
+var product_list = {}
+for(let rec in order_list){
+product_list[order_list[rec].product_id]  = 0
+
+}
+
+
+for(let rec in order_list){
+product_list[order_list[rec].product_id] = product_list[order_list[rec].product_id] +order_list[rec].product_uom_qty
+
+
+
+}
+
+var ids = []
+var order_list_new =[]
+for (let rec  in order_list){
+
+console.log('ids.includes(order_list[rec].product_id)' ,ids.includes(order_list[rec].product_id[0]))
+console.log('ids',ids)
+
+
+
+if (ids.includes(order_list[rec].product_id[0])){
+
+
+}else{
+
+ids.push(order_list[rec].product_id[0])
+order_list[rec].product_uom_qty = product_list[order_list[rec].product_id]
+order_list_new.push(order_list[rec] )
+
+}
+
+
+}
+
+
+
+
+console.log('order_list_new',order_list_new)
+return order_list_new
+ },
+
+
+
+
+
+
+
+
+
+
+
+
    init: function(parent, action) {
         this._super.apply(this, arguments);
         this.id = action.context.active_id
@@ -76,7 +134,7 @@ var ReturnImeiScreen = AbstractAction.extend({
                     domain: [['picking_id','=',self.id],['product_id.is_imei_required','=',true]],
                 }).then(function (Product) {
                      console.log(Product)
-                    self.products = Product
+                    self.products = self.merge_same_order_line(Product)
 
 
                     });
