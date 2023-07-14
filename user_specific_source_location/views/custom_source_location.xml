@@ -41,7 +41,7 @@
          <record id="custom_source_user_location_rule" model="ir.rule">
         <field name="name">Custom Source Location User Specific</field>
         <field name="model_id" ref="model_custom_source_location"/>
-        <field name="domain_force">['|', ('user_ids', 'in', [user.id])]</field>
+        <field name="domain_force">[('user_ids', 'in', [user.id])]</field>
     </record>
 
         <record id="restrict_custom_location_rule" model="ir.rule">
