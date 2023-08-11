@@ -12,7 +12,7 @@ class AccountPaymentRegister(models.TransientModel):
     def _compute_domain_payment_register(self):
 
         if self.env.user.journal_id:
-            for journal in  self.env.user.journal_id.id:
+            for journal in  self.env.user.journal_id:
                 self.journal_id = journal
                 break
             self.journal_id_domain = json.dumps([('id', 'in', self.env.user.journal_id.mapped('id'))])
