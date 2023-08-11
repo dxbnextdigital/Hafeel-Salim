@@ -2,7 +2,7 @@
 <odoo>
     <data>
 
-       <record id="account_payment_register_form_view" model="ir.ui.view">
+       <record id="account_payment_register_custom_form_view" model="ir.ui.view">
         <field name="name">Mis account.payment.register</field>
         <field name="model">account.payment.register</field>
         <field name="inherit_id" ref="account.view_account_payment_register_form"/>
