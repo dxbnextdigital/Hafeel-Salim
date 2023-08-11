@@ -1,6 +1,6 @@
 from odoo import models, fields, api, _
 import json
-class CustomSourceLocation(models.TransientModel):
+class AccountPaymentRegister(models.TransientModel):
     _inherit = "account.payment.register"
 
     journal_id_domain = fields.Char(compute="_compute_domain_payment_register",

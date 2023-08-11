@@ -7,7 +7,7 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     block_nonpayment = fields.Boolean('Block for Non Payment?', default=False)
-    print_name = fields.Char(string='Print Name', required=True)
+    print_name = fields.Char(string='Print Name')
 
 
     def check_overdue_invoice_cron_job(self):
