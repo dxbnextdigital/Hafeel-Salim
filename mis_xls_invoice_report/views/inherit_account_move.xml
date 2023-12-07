@@ -1,0 +1,18 @@
+<odoo>
+    <data>
+        <record id="inherit_invoice_order_linesform" model="ir.ui.view">
+            <field name="name">edit.invoice.order.lines.view</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='tax_ids']" position="after">
+                    <field name="vat_amount" optional="hide"/>
+                </xpath>
+                 <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='price_subtotal']" position="after">
+                    <field name="total_inc_vat" optional="hide"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -11,6 +11,7 @@ from datetime import timedelta
 from odoo.exceptions import UserError
 
 
+
 class CreditNoteReport(models.TransientModel):
     _name = "wizard.creditnote.history"
     _description = "Current CreditNote History"
