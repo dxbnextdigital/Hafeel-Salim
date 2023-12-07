@@ -16,6 +16,8 @@
                 'account'
                 ],
     'data': [
+
+            'views/inherit_account_move.xml',
             'views/wizard_view.xml',
             'views/action_manager.xml',
             'views/invoice_product_wizard_view.xml',

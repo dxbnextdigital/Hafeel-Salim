@@ -31,7 +31,6 @@ class InvoiceProductReport(models.TransientModel):
                                                       ('move_type', 'in', ('out_invoice', 'out_refund')),
                                                       ('company_id', '=', self.env.company.id)])
 
-
         invids = tuple([inv_id.id for inv_id in objinvoice])
 
         date = datetime.now()
@@ -203,6 +202,19 @@ class InvoiceProductReport(models.TransientModel):
         sheet.set_column(colno, colno, column_width)
         sheet.write(rowno-1, colno, 'Total Sales Price', wbf['content_border_bg'])
 
+
+
+        colno += 1
+        column_width = 15
+        sheet.set_column(colno, colno, column_width)
+        sheet.write(rowno - 1, colno, 'Vat amount', wbf['content_border_bg'])
+
+        colno += 1
+        column_width = 15
+        sheet.set_column(colno, colno, column_width)
+        sheet.write(rowno - 1, colno, 'Total Inc Vat', wbf['content_border_bg'])
+
+
         colno += 1
         column_width = 15
         sheet.set_column(colno, colno, column_width)
@@ -213,13 +225,21 @@ class InvoiceProductReport(models.TransientModel):
         summary_brand = {}
         summary_partner = {}
         multplication =1
+        total_cost=0
+        total_sales_price=0
+        total_unit_profit=0
+        total_qty=0
+        total_cost_price=0
+        total_discount=0
+        total_sales_amount=0
+        total_vat_amount=0
+        total_plus_vat_amount=0
+        total_profit_amount=0
         for rec in objinvln:
             if rec.move_id.move_type=='out_refund':
                 multplication=-1
             else:
                 multplication = 1
-
-
 
             if (rec.move_id.invoice_user_id.name in summary_sales_person):
                 tmptotal = float(summary_sales_person[rec.move_id.invoice_user_id.name]) + rec.price_subtotal
@@ -291,45 +311,87 @@ class InvoiceProductReport(models.TransientModel):
             for costrec in objinvcost:
                 costprice = costrec.price_unit * -1
 
+
             colno += 1
             sheet.write(rowno, colno, costprice, wbf['content_float_border'])
+            total_cost += costprice
             colno += 1
             sheet.write(rowno, colno, rec.price_unit, wbf['content_float_border'])
+            total_sales_price +=rec.price_unit
 
             colno += 1
             sheet.write(rowno, colno, (rec.price_unit-costprice), wbf['content_float_border'])
+            total_unit_profit +=(rec.price_unit-costprice)
             colno += 1
-            sheet.write(rowno, colno, int(rec.quantity*multplication), wbf['content_int_border'])
-            colno += 1
-            sheet.write(rowno, colno, (costprice*rec.quantity*multplication), wbf['content_float_border'])
-            colno += 1
-            sheet.write(rowno, colno, rec.discount, wbf['content_float_border'])
 
+            sheet.write(rowno, colno, int(rec.quantity*multplication), wbf['content_int_border'])
+            total_qty +=int(rec.quantity*multplication)
             colno += 1
+
+            sheet.write(rowno, colno, (costprice*rec.quantity*multplication), wbf['content_float_border'])
+            total_cost_price +=(costprice*rec.quantity*multplication)
+            colno += 1
+
+            sheet.write(rowno, colno, rec.discount, wbf['content_float_border'])
+            total_discount +=rec.discount
+            colno += 1
+
             sheet.write(rowno, colno, (rec.price_subtotal*multplication), wbf['content_float_border'])
+            total_sales_amount +=(rec.price_subtotal*multplication)
+            colno += 1
+
+            sheet.write(rowno, colno, (rec.vat_amount), wbf['content_float_border'])
+            total_vat_amount +=rec.vat_amount
+            colno += 1
+
+            sheet.write(rowno, colno, (rec.total_inc_vat), wbf['content_float_border'])
+            total_plus_vat_amount +=rec.total_inc_vat
             colno += 1
             sheet.write(rowno, colno, ((rec.price_subtotal*multplication)-(costprice*rec.quantity*multplication)), wbf['content_float_border'])
-
-            totcost =0.00
-            totsal=0.00
-            totqty=0
+            total_profit_amount +=((rec.price_subtotal*multplication)-(costprice*rec.quantity*multplication))
+            # totcost =0.00
+            # totsal=0.00
+            # totqty=0
             rowno+=1
-            colno = 13
+            colno = 10
+        print("total cost",total_cost)
         sheet.merge_range(rowno, 0, rowno, colno, "Total", wbf['content_border_bg'])
-        sheet.write(rowno, colno, "=sum(" + chr(65+colno) +"2:" + chr(65+colno) +str(rowno)+")", wbf['content_int_border_total'])
         colno += 1
-        sheet.write(rowno, colno, "=sum(" + chr(65+colno) +"2:" + chr(65+colno) + str(rowno) + ")", wbf['content_float_border_total'])
+        sheet.write(rowno, colno,total_cost,wbf['content_float_border_total'])
         colno += 1
-        sheet.write(rowno, colno, "=sum(" + chr(65+colno) +"2:" + chr(65+colno) + str(rowno) + ")", wbf['content_float_border_total'])
+        sheet.write(rowno, colno, total_sales_price, wbf['content_float_border_total'])
         colno += 1
-        sheet.write(rowno, colno, "",
-                    wbf['content_float_border_total'])
+        sheet.write(rowno, colno, total_unit_profit, wbf['content_float_border_total'])
+        colno += 1
+        sheet.write(rowno, colno, total_qty, wbf['content_float_border_total'])
+        colno += 1
+        sheet.write(rowno, colno, total_cost_price, wbf['content_float_border_total'])
+        colno += 1
+        sheet.write(rowno, colno, total_discount, wbf['content_float_border_total'])
+        colno += 1
+        sheet.write(rowno, colno, total_sales_amount, wbf['content_float_border_total'])
+        colno += 1
+        sheet.write(rowno, colno, total_vat_amount, wbf['content_float_border_total'])
+        colno += 1
+        sheet.write(rowno, colno, total_plus_vat_amount, wbf['content_float_border_total'])
+        colno += 1
+        sheet.write(rowno, colno, total_profit_amount, wbf['content_float_border_total'])
         colno += 1
 
-        sheet.write(rowno, colno, "=sum(" + chr(65+colno) +"2:" + chr(65+colno) + str(rowno) + ")", wbf['content_float_border_total'])
-        colno += 1
-        sheet.write(rowno, colno, "=sum(" + chr(65 + colno) + "2:" + chr(65 + colno) + str(rowno) + ")",
-                    wbf['content_float_border_total'])
+        # sheet.write(rowno, colno, "=sum(" + chr(65+colno) +"2:" + chr(65+colno) +str(rowno)+")", wbf['content_int_border_total'])
+        # colno += 1
+        # sheet.write(rowno, colno, "=sum(" + chr(65+colno) +"2:" + chr(65+colno) + str(rowno) + ")", wbf['content_float_border_total'])
+        # colno += 1
+        # sheet.write(rowno, colno, "=sum(" + chr(65+colno) +"2:" + chr(65+colno) + str(rowno) + ")", wbf['content_float_border_total'])
+        # colno += 1
+        # sheet.write(rowno, colno, "",
+        #             wbf['content_float_border_total'])
+        # colno += 1
+        #
+        # sheet.write(rowno, colno, "=sum(" + chr(65+colno) +"2:" + chr(65+colno) + str(rowno) + ")", wbf['content_float_border_total'])
+        # colno += 1
+        # sheet.write(rowno, colno, "=sum(" + chr(65 + colno) + "2:" + chr(65 + colno) + str(rowno) + ")",
+        #             wbf['content_float_border_total'])
         rowno += 1
 
         ######################### Sales Person
@@ -348,7 +410,9 @@ class InvoiceProductReport(models.TransientModel):
 
         rowno = 1
         colno = 0
+        total_saleperson_summary=0
         for recsale in summary_sales_person:
+            total_saleperson_summary +=summary_sales_person[recsale]
             colno = 0
             worksheet2.write(rowno, colno, recsale, wbf['content_border'])
             colno += 1
@@ -357,7 +421,9 @@ class InvoiceProductReport(models.TransientModel):
 
         worksheet2.write(rowno, 0,  "Total", wbf['content_border_bg'])
         colno = 1
-        worksheet2.write(rowno, colno, "=sum(B2:B" + str(rowno) + ")", wbf['content_float_border_total'])
+
+        worksheet2.write(rowno, colno,total_saleperson_summary , wbf['content_float_border_total'])
+        # worksheet2.write(rowno, colno, "=sum(B2:B" + str(rowno) + ")", wbf['content_float_border_total'])
 
 
         #######################################
@@ -381,11 +447,15 @@ class InvoiceProductReport(models.TransientModel):
 
         rowno = 1
         colno = 0
+        total_quantity=0
+        total_sale_amount=0
         for recbrand in summary_brand:
             colno = 0
             worksheet3.write(rowno, colno, recbrand if recbrand else '', wbf['content_border'])
             colno += 1
             dic_sales = summary_brand[recbrand]
+            total_quantity +=dic_sales['noofqty']
+            total_sale_amount +=dic_sales['totalsale']
             worksheet3.write(rowno, colno, dic_sales['noofqty'], wbf['content_float_border'])
             colno += 1
 
@@ -393,9 +463,12 @@ class InvoiceProductReport(models.TransientModel):
             rowno += 1
         worksheet3.write(rowno, 0, "Total", wbf['content_border_bg'])
         colno = 1
-        worksheet3.write(rowno, colno, "=sum(B2:B" + str(rowno) + ")", wbf['content_float_border_total'])
+        worksheet3.write(rowno, colno, total_quantity, wbf['content_float_border_total'])
         colno += 1
-        worksheet3.write(rowno, colno, "=sum(C2:C" + str(rowno) + ")", wbf['content_float_border_total'])
+        worksheet3.write(rowno, colno, total_sale_amount, wbf['content_float_border_total'])
+        # worksheet3.write(rowno, colno, "=sum(B2:B" + str(rowno) + ")", wbf['content_float_border_total'])
+        # colno += 1
+        # worksheet3.write(rowno, colno, "=sum(C2:C" + str(rowno) + ")", wbf['content_float_border_total'])
 
         ##############################################
 
@@ -415,8 +488,12 @@ class InvoiceProductReport(models.TransientModel):
 
         rowno = 1
         colno = 0
+        total_customer_sales=0
         for recpartner in summary_partner:
+
             dic_partners = summary_partner[recpartner]
+            total_customer_sales +=dic_partners['totalsale']
+
             colno = 0
             worksheet4.write(rowno, colno, dic_partners['partnername'] if dic_partners['partnername'] else '', wbf['content_border'])
             colno += 1
@@ -424,14 +501,17 @@ class InvoiceProductReport(models.TransientModel):
             rowno += 1
         worksheet4.write(rowno, 0, "Total", wbf['content_border_bg'])
         colno = 1
-        worksheet4.write(rowno, colno, "=sum(B2:B" + str(rowno) + ")", wbf['content_float_border_total'])
+
+        worksheet4.write(rowno, colno, total_customer_sales, wbf['content_float_border_total'])
+        # worksheet4.write(rowno, colno, "=sum(B2:B" + str(rowno) + ")", wbf['content_float_border_total'])
 
 
         ##############################################
 
-
+        #
         workbook.close()
         out = base64.encodestring(fp.getvalue())
+        # out = base64.encodebytes(fp.getvalue())
         self.write({'datas': out, 'datas_fname': filename})
         fp.close()
         filename += '%2Exlsx'
