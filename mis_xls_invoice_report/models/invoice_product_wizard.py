@@ -340,12 +340,12 @@ class InvoiceProductReport(models.TransientModel):
             total_sales_amount +=(rec.price_subtotal*multplication)
             colno += 1
 
-            sheet.write(rowno, colno, (rec.vat_amount), wbf['content_float_border'])
-            total_vat_amount +=rec.vat_amount
+            sheet.write(rowno, colno, (rec.vat_amount*multplication), wbf['content_float_border'])
+            total_vat_amount +=(rec.vat_amount*multplication)
             colno += 1
 
-            sheet.write(rowno, colno, (rec.total_inc_vat), wbf['content_float_border'])
-            total_plus_vat_amount +=rec.total_inc_vat
+            sheet.write(rowno, colno, (rec.total_inc_vat*multplication), wbf['content_float_border'])
+            total_plus_vat_amount +=(rec.total_inc_vat * multplication)
             colno += 1
             sheet.write(rowno, colno, ((rec.price_subtotal*multplication)-(costprice*rec.quantity*multplication)), wbf['content_float_border'])
             total_profit_amount +=((rec.price_subtotal*multplication)-(costprice*rec.quantity*multplication))
@@ -354,7 +354,6 @@ class InvoiceProductReport(models.TransientModel):
             # totqty=0
             rowno+=1
             colno = 10
-        print("total cost",total_cost)
         sheet.merge_range(rowno, 0, rowno, colno, "Total", wbf['content_border_bg'])
         colno += 1
         sheet.write(rowno, colno,total_cost,wbf['content_float_border_total'])
@@ -510,8 +509,8 @@ class InvoiceProductReport(models.TransientModel):
 
         #
         workbook.close()
-        out = base64.encodestring(fp.getvalue())
-        # out = base64.encodebytes(fp.getvalue())
+        # out = base64.encodestring(fp.getvalue())
+        out = base64.encodebytes(fp.getvalue())
         self.write({'datas': out, 'datas_fname': filename})
         fp.close()
         filename += '%2Exlsx'
