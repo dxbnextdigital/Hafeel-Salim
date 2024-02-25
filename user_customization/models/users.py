@@ -10,5 +10,5 @@ class ResUsers(models.Model):
     )
 
     journal_id = fields.Many2many('account.journal', domain=[('type', 'in', ('cash', 'bank'))])
-    invoice_users_domain = fields.Char(string="Invoice Users id (',')")
+    invoice_users_domain = fields.Char(string="Invoice Users id ('-')")
 

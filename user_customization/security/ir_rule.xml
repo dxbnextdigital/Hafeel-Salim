@@ -2,20 +2,16 @@
 <odoo>
     <data>
 
+          <record id="group_sale_salesman_invoice_restriction" model="res.groups">
+            <field name="name">Show Invoice count for According to Domain</field>
+          </record>
 
-     <record id="group_sale_receipts_invoice_count" model="res.groups">
-        <field name="name">Invoice Count Visible According to Users </field>
-
-    </record>
-
-  <record id="account_invoice_report_rule_see_personal_custom" model="ir.rule">
-        <field name="name">Personal Invoices Analysis Counts</field>
+<record id="account_invoice_restriction_report_rule_see_personal" model="ir.rule">
+        <field name="name">Personal Invoices Analysis Invoice Restriction</field>
         <field name="model_id" ref="sale.model_account_invoice_report"/>
-        <field name="domain_force">['|', ('invoice_user_id', '=', [int(i) for i in user.source_users_invoice_restriction.split('-')]), ('invoice_user_id', '=', False)]</field>
-                    <field name="groups" eval="[(4, ref('user_customization.group_sale_receipts_invoice_count'))]"/>
-
+        <field name="domain_force">['|', ('invoice_user_id', '=', [ int(i) for i in user.invoice_users_domain.split("-")]), ('invoice_user_id', '=', False)]</field>
+        <field name="groups" eval="[(4, ref('user_customization.group_sale_salesman_invoice_restriction'))]"/>
     </record>
-
 
     </data>
 </odoo>

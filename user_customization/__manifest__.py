@@ -12,7 +12,8 @@
     'website': 'www.mindinfosys.com',
     'depends': ['base', 'base_setup', 'payment'],
     'data': [
-        'views/users_view.xml',
+        'security/ir_rule.xml',
+        'views/users_view.xml'
     ],
     'installable': True,
     'application': False,
