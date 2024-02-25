@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+
+     <record id="group_sale_receipts_invoice_count" model="res.groups">
+        <field name="name">Invoice Count Visible According to Users </field>
+
+    </record>
+
+  <record id="account_invoice_report_rule_see_personal_custom" model="ir.rule">
+        <field name="name">Personal Invoices Analysis Counts</field>
+        <field name="model_id" ref="sale.model_account_invoice_report"/>
+        <field name="domain_force">['|', ('invoice_user_id', '=', [int(i) for i in user.source_users_invoice_restriction.split('-')]), ('invoice_user_id', '=', False)]</field>
+                    <field name="groups" eval="[(4, ref('user_customization.group_sale_receipts_invoice_count'))]"/>
+
+    </record>
+
+
+    </data>
+</odoo>
