@@ -10,6 +10,7 @@
                     <group string="Locations">
                         <field name="custom_source_id"/>
                         <field name="journal_id" widget="many2many_tags"/>
+                        <field name="invoice_users_domain" />
                     </group>
                 </group>
 

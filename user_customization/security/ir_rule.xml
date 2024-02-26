@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+          <record id="group_sale_salesman_invoice_restriction" model="res.groups">
+            <field name="name">Show Invoice count for According to Domain</field>
+          </record>
+
+<record id="account_invoice_restriction_report_rule_see_personal" model="ir.rule">
+        <field name="name">Personal Invoices Analysis Invoice Restriction</field>
+        <field name="model_id" ref="sale.model_account_invoice_report"/>
+        <field name="domain_force">['|', ('invoice_user_id', '=', [ int(i) for i in user.invoice_users_domain.split("-")]), ('invoice_user_id', '=', False)]</field>
+        <field name="groups" eval="[(4, ref('user_customization.group_sale_salesman_invoice_restriction'))]"/>
+    </record>
+
+    </data>
+</odoo>
